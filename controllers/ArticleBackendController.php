@@ -1,0 +1,120 @@
+<?php
+namespace asinfotrack\yii2\article\controllers;
+
+use Yii;
+use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
+use asinfotrack\yii2\article\Module;
+use asinfotrack\yii2\article\models\Article;
+use asinfotrack\yii2\article\models\search\ArticleSearch;
+
+/**
+ * Controller to manage articles in the backend
+ *
+ * @author Pascal Mueller, AS infotrack AG
+ * @link http://www.asinfotrack.ch
+ * @license AS infotrack AG license / MIT, see provided license file
+ */
+class ArticleBackendController extends \yii\web\Controller
+{
+
+	/**
+	 * @inheritdoc
+	 */
+	public function behaviors()
+	{
+		//default filters
+		$behaviors = [
+			'verbs'=>[
+				'class'=>VerbFilter::className(),
+				'actions'=>[
+					'delete'=>['post'],
+				],
+			],
+		];
+
+		//access control filter if provided by module
+		$module = Module::getInstance();
+		if (!empty($module->backendArticleAccessControl)) {
+			$behaviors['access'] = $module->backendArticleAccessControl;
+		}
+
+		return $behaviors;
+	}
+
+	public function actionIndex()
+	{
+		$searchModel = new ArticleSearch();
+		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+		return $this->render('index', [
+			'searchModel'=>$searchModel,
+			'dataProvider'=>$dataProvider,
+		]);
+	}
+
+	public function actionView($id)
+	{
+		$model = $this->findModel($id);
+		$showArticlePreview = Module::getInstance()->enableArticlePreview;
+
+		return $this->render('view', [
+			'model'=>$model,
+			'showArticlePreview'=>$showArticlePreview,
+		]);
+	}
+
+	public function actionCreate()
+	{
+		$model = new Article();
+		$loaded = $model->load(Yii::$app->request->post());
+
+		if ($loaded && $model->save()) {
+			return $this->redirect(['article-backend/view', 'id'=>$model->id]);
+		}
+
+		return $this->render('create', [
+			'model'=>$model,
+		]);
+	}
+
+	public function actionUpdate($id)
+	{
+		$model = $this->findModel($id);
+		$loaded = $model->load(Yii::$app->request->post());
+
+		if ($loaded && $model->save()) {
+			return $this->redirect(['article-backend/view', 'id'=>$model->id]);
+		}
+
+		return $this->render('update', [
+			'model'=>$model,
+		]);
+	}
+
+	public function actionDelete($id)
+	{
+		$model = $this->findModel($id);
+		$model->delete();
+
+		return $this->redirect(['article-backend/index']);
+	}
+
+	/**
+	 * Tries to find an article model by its id or canonical
+	 *
+	 * @param string|integer $idOrCanonical the id or canonical of the article model
+	 * @return \asinfotrack\yii2\article\models\Article|null|\yii\db\ActiveRecord the article model or null
+	 * @throws \yii\web\NotFoundHttpException when article could not be found
+	 */
+	protected function findModel($idOrCanonical)
+	{
+		$model = Article::findOne($idOrCanonical);
+		if ($model === null) {
+			$msg = Yii::t('app', 'No article found with `{value}`', ['value'=>$idOrCanonical]);
+			throw new NotFoundHttpException($msg);
+		}
+		return $model;
+	}
+
+}
