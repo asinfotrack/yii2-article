@@ -117,7 +117,7 @@ class Module extends \yii\base\Module implements yii\base\BootstrapInterface
 	 * If set, the config will be added to the behaviors of the controller.
 	 */
 	public $backendArticleAccessControl = [
-		'class'=>'\yii\filters\AccessControl',
+		'class'=>'yii\filters\AccessControl',
 		'rules'=>[
 			[
 				'allow'=>true,
@@ -131,7 +131,7 @@ class Module extends \yii\base\Module implements yii\base\BootstrapInterface
 	 * If set, the config will be added to the behaviors of the controller.
 	 */
 	public $backendArticleCategoryAccessControl = [
-		'class'=>'\yii\filters\AccessControl',
+		'class'=>'yii\filters\AccessControl',
 		'rules'=>[
 			[
 				'allow'=>true,

@@ -39,18 +39,21 @@ To remove the table just do the same migration downwards.
         'article'=>[
             'class'=>'asinfotrack\yii2\article\Module',
             
+            'userRelationCallback'=>function ($model, $attribute) {
+                return $model->hasOne('app\models\User', ['id'=>$attribute]);
+            },
             'backendArticleAccessControl' = [
-                'class'=>'\yii\filters\AccessControl',
+                'class'=>'yii\filters\AccessControl',
                 'rules'=>[
                     ['allow'=>true, 'roles'=>['@']],
                 ],
-            ];
+            ],
             'backendArticleCategoryAccessControl' = [
-                'class'=>'\yii\filters\AccessControl',
+                'class'=>'yii\filters\AccessControl',
                 'rules'=>[
                     ['allow'=>true, 'roles'=>['@']],
                 ],
-            ];
+            ],
             
             'components'=>[   
                 //configuration of the renderer         
