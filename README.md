@@ -34,25 +34,39 @@ To remove the table just do the same migration downwards.
 ```php
     'modules'=>[
         
-        //your other modules
+        //your other modules...
         
         'article'=>[
             'class'=>'asinfotrack\yii2\article\Module',
-            'components'=>[
+            
+            'backendArticleAccessControl' = [
+                'class'=>'\yii\filters\AccessControl',
+                'rules'=>[
+                    ['allow'=>true, 'roles'=>['@']],
+                ],
+            ];
+            'backendArticleCategoryAccessControl' = [
+                'class'=>'\yii\filters\AccessControl',
+                'rules'=>[
+                    ['allow'=>true, 'roles'=>['@']],
+                ],
+            ];
+            
+            'components'=>[   
+                //configuration of the renderer         
                 'renderer'=>[
                     'class'=>'asinfotrack\yii2\article\components\ArticleRenderer',
                     'addDataAttributesToArticleTagOptions'=>true,
                     'showDebugTags'=>false,
                     'placeholderCallbackMap'=>[
-                        //example for a custom placeholder for an image tag
-                        
+                        //example for a custom placeholder for an image tag                        
                         'img'=>function ($params) {
                             return Html::img($params[0]);
                         },
                         
                         //your other custom placeholder tags here...
                     ],
-                ],
+                ],                
             ],
         ],
     ],
