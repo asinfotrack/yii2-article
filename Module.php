@@ -127,6 +127,24 @@ class Module extends \yii\base\Module implements yii\base\BootstrapInterface
 	];
 
 	/**
+	 * @var array array holding the views which will be used for the article backend. The
+	 * array is indexed by the action name and the values will be used to get the views. By
+	 * default the views of the module will be used.
+	 *
+	 * To use a local view, use the corresponding view syntax. Usually two slashes are used
+	 * to reference your root view path (eg `//my-folder/my-view`).
+	 *
+	 * See the article backend controller for the variables passed to the corresponding views.
+	 * @see \asinfotrack\yii2\article\controllers\ArticleBackendController
+	 */
+	public $backendArticleViews = [
+		'index'=>'index',
+		'view'=>'view',
+		'create'=>'create',
+		'update'=>'update',
+	];
+
+	/**
 	 * @var array configuration for the access control of the article category controller.
 	 * If set, the config will be added to the behaviors of the controller.
 	 */
@@ -138,6 +156,24 @@ class Module extends \yii\base\Module implements yii\base\BootstrapInterface
 				'roles'=>['@'],
 			],
 		],
+	];
+
+	/**
+	 * @var array array holding the views which will be used for the article category backend.
+	 * The array is indexed by the action name and the values will be used to get the views. By
+	 * default the views of the module will be used.
+	 *
+	 * To use a local view, use the corresponding view syntax. Usually two slashes are used
+	 * to reference your root view path (eg `//my-folder/my-view`).
+	 *
+	 * See the article category backend controller for the variables passed to the corresponding views.
+	 * @see \asinfotrack\yii2\article\controllers\ArticleBackendController
+	 */
+	public $backendArticleCategoryViews = [
+		'index'=>'index',
+		'view'=>'view',
+		'create'=>'create',
+		'update'=>'update',
 	];
 
 	/**

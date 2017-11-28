@@ -47,7 +47,7 @@ class ArticleBackendController extends \yii\web\Controller
 		$searchModel = new ArticleSearch();
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-		return $this->render('index', [
+		return $this->render(Module::getInstance()->backendArticleViews['index'], [
 			'searchModel'=>$searchModel,
 			'dataProvider'=>$dataProvider,
 		]);
@@ -58,7 +58,7 @@ class ArticleBackendController extends \yii\web\Controller
 		$model = $this->findModel($id);
 		$showArticlePreview = Module::getInstance()->enableArticlePreview;
 
-		return $this->render('view', [
+		return $this->render(Module::getInstance()->backendArticleViews['view'], [
 			'model'=>$model,
 			'showArticlePreview'=>$showArticlePreview,
 		]);
@@ -73,7 +73,7 @@ class ArticleBackendController extends \yii\web\Controller
 			return $this->redirect(['article-backend/view', 'id'=>$model->id]);
 		}
 
-		return $this->render('create', [
+		return $this->render(Module::getInstance()->backendArticleViews['create'], [
 			'model'=>$model,
 		]);
 	}
@@ -87,7 +87,7 @@ class ArticleBackendController extends \yii\web\Controller
 			return $this->redirect(['article-backend/view', 'id'=>$model->id]);
 		}
 
-		return $this->render('update', [
+		return $this->render(Module::getInstance()->backendArticleViews['update'], [
 			'model'=>$model,
 		]);
 	}
