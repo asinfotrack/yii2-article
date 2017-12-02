@@ -5,7 +5,7 @@
 	"description": "Yii2-article is a module offering basic CMS-functionality",
 	"keywords": ["yii2", "article", "cms", "behavior", "widget", "bundle", "action"],
 
-	"license": "AS infotrack AG license / MIT, see provided license file",
+	"license": "MIT",
 	"authors": [
 		{
 			"name": "Pascal Mueller",
