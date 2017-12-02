@@ -1,6 +1,8 @@
 # Yii2-article
 Yii2-article is a lightweight cms extension
 
+__WATCH OUT: this extension is still under development. Breaking changes can occur without notice until first release!__
+
 ## Installation
 
 ### Basic installation
