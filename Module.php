@@ -14,7 +14,7 @@ use yii\jui\DatePicker;
  *
  * @property \asinfotrack\yii2\article\components\ArticleRenderer $renderer
  */
-class Module extends \yii\base\Module implements yii\base\BootstrapInterface
+class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 {
 
 	/**
