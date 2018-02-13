@@ -4,6 +4,7 @@ use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use asinfotrack\yii2\article\models\Article;
 use asinfotrack\yii2\toolbox\widgets\Button;
 use asinfotrack\yii2\toolbox\widgets\grid\AdvancedDataColumn;
 use asinfotrack\yii2\toolbox\widgets\grid\IdColumn;
@@ -43,7 +44,15 @@ $this->title = Yii::t('app', 'Articles');
 			},
 		],
 		'title',
-
+		[
+			'class'=>AdvancedDataColumn::className(),
+			'attribute'=>'type',
+			'columnWidth'=>10,
+			'filter'=>Article::typeFilter(),
+			'value'=>function ($model, $key, $index, $column) {
+				return Article::typeFilter()[$model->type];
+			},
+		],
 		[
 			'class'=>ActionColumn::className(),
 			'options'=>['style'=>'width: 100px;'],

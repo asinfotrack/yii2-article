@@ -2,6 +2,7 @@
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use asinfotrack\yii2\article\models\Article;
 use asinfotrack\yii2\article\models\ArticleCategory;
 use asinfotrack\yii2\article\Module;
 
@@ -16,6 +17,13 @@ $form = ActiveForm::begin([
 ?>
 
 <?= $form->errorSummary($model); ?>
+
+<?php if (Module::getInstance()->useArticleTypes): ?>
+<fieldset>
+	<legend><?= Yii::t('app', 'Article type specification') ?></legend>
+	<?= $form->field($model, 'type')->dropDownList(Article::typeFilter()) ?>
+</fieldset>
+<?php endif; ?>
 
 <fieldset>
 	<legend><?= Yii::t('app', 'Titles') ?></legend>
@@ -51,6 +59,11 @@ $form = ActiveForm::begin([
 	<?= $this->render('_form_callback_input', [
 		'form'=>$form, 'model'=>$model, 'attribute'=>'published_to', 'callback'=>$module->dateInputCallback,
 	]) ?>
+</fieldset>
+
+<fieldset>
+	<legend><?= Yii::t('app', 'Attachments & Links') ?></legend>
+
 </fieldset>
 
 <fieldset>

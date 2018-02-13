@@ -288,8 +288,6 @@ class ArticleCategory extends \yii\db\ActiveRecord
 			->viaTable('{{%article_article_category}}', ['article_category_id'=>'id']);
 	}
 
-
-
 	/**
 	 * Returns the user who created the instance. This relation only works when
 	 * `userRelationCallback` is properly configured within the module config.

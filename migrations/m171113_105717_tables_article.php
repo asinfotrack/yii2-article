@@ -25,11 +25,15 @@ class m171113_105717_tables_article extends \asinfotrack\yii2\toolbox\console\Mi
 			'title_head'=>$this->string(70),
 			'title_menu'=>$this->string(255),
 		]);
+		$this->createIndex('IN_article_category_canonical', '{{%article_category}}', ['canonical']);
+		$this->createIndex('IN_article_category_lft', '{{%article_category}}', ['lft']);
+		$this->createIndex('IN_article_category_rgt', '{{%article_category}}', ['rgt']);
 		$this->insert('{{%article_category}}', ['lft'=>1,'rgt'=>2,	'depth'=>0,'title'=>'Tree root','canonical'=>'tree-root']);
 
 		$this->createAuditedTable('{{%article}}', [
 			'id'=>$this->primaryKey(),
 			'canonical'=>$this->string()->notNull()->unique(),
+			'type'=>$this->smallInteger()->notNull()->defaultValue(1),
 			'title'=>$this->string()->notNull(),
 			'title_head'=>$this->string(70),
 			'title_menu'=>$this->string(255),
@@ -41,6 +45,8 @@ class m171113_105717_tables_article extends \asinfotrack\yii2\toolbox\console\Mi
 			'intro'=>$this->text(),
 			'content'=>$this->text(),
 		]);
+		$this->createIndex('IN_article_canonical', '{{%article}}', ['canonical']);
+		$this->createIndex('IN_article_type', '{{%article}}', ['type']);
 
 		$this->createTable('{{%article_article_category}}', [
 			'article_id'=>$this->integer()->notNull(),

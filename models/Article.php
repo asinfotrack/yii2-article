@@ -10,8 +10,9 @@ use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\validators\ExistValidator;
-use asinfotrack\yii2\article\Module;
 use asinfotrack\yii2\article\components\ArticleRenderer;
+use asinfotrack\yii2\article\helpers\AttachmentHelper;
+use asinfotrack\yii2\article\Module;
 use asinfotrack\yii2\article\models\query\ArticleQuery;
 
 /**
@@ -23,6 +24,7 @@ use asinfotrack\yii2\article\models\query\ArticleQuery;
  *
  * @property integer $id
  * @property string $canonical
+ * @property integer $type
  * @property string $title
  * @property string $title_head
  * @property string $title_menu
@@ -47,6 +49,25 @@ use asinfotrack\yii2\article\models\query\ArticleQuery;
  */
 class Article extends \yii\db\ActiveRecord
 {
+
+	/**
+	 * Constant to mark an article with an undefined type
+	 */
+	const TYPE_UNDEFINED = 1;
+	/**
+	 * Constant to mark an article as a full page article
+	 */
+	const TYPE_ARTICLE = 10;
+	/**
+	 * Constant to mark an article as a text block which is intended for usage in other
+	 * articles
+	 */
+	const TYPE_BLOCK = 20;
+
+	/**
+	 * @var integer[] holds all valid types of an article
+	 */
+	protected static $ALL_TYPES = [ self::TYPE_UNDEFINED, self::TYPE_ARTICLE, self::TYPE_BLOCK ];
 
 	/**
 	 * @var integer[] holds the category for assignment and reassignment
@@ -101,6 +122,8 @@ class Article extends \yii\db\ActiveRecord
 			[['canonical','title','title_head','title_menu','meta_keywords','meta_description'], 'default'],
 
 			[['canonical','title'], 'required'],
+
+			[['type'], 'in', 'range'=>static::$ALL_TYPES],
 			[['title_head'], 'string', 'max'=>70],
 			[['title_menu', 'meta_description'], 'string', 'max'=>160],
 			[['meta_keywords'], 'string', 'max'=>255],
@@ -152,6 +175,7 @@ class Article extends \yii\db\ActiveRecord
 		return [
 			'id'=>Yii::t('app', 'ID'),
 			'canonical'=>Yii::t('app', 'Canonical'),
+			'type'=>Yii::t('app', 'Type of article'),
 			'title'=>Yii::t('app', 'Title'),
 			'title_head'=>Yii::t('app', 'Title used in HTML-Head'),
 			'title_menu'=>Yii::t('app', 'Title used in Menus'),
@@ -230,6 +254,11 @@ class Article extends \yii\db\ActiveRecord
 			return false;
 		}
 
+		//create attachment folder
+		if (!AttachmentHelper::createDirectoryForArticle($this->id)) {
+			return false;
+		}
+
 		//remove old relations to categories
 		$oldCats = $this->articleCategories;
 		$oldCatIds = ArrayHelper::getColumn($oldCats, 'id');
@@ -247,6 +276,16 @@ class Article extends \yii\db\ActiveRecord
 		}
 
 		return true;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function delete()
+	{
+		$resParent = parent::delete();
+		if ($resParent) AttachmentHelper::deleteDirectoryForModel($this->id);
+		return $resParent;
 	}
 
 	/**
@@ -356,6 +395,20 @@ class Article extends \yii\db\ActiveRecord
 		}
 
 		return call_user_func($callback, $this, 'updated_by');
+	}
+
+	/**
+	 * Returns the possible types to use in dropdown filters or other selections
+	 *
+	 * @return array array indexed by type with values representing the labels of each type
+	 */
+	public static function typeFilter()
+	{
+		return [
+			self::TYPE_UNDEFINED=>Yii::t('app', 'Undefined'),
+			self::TYPE_ARTICLE=>Yii::t('app', 'Article'),
+			self::TYPE_BLOCK=>Yii::t('app', 'Block'),
+		];
 	}
 
 }

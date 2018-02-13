@@ -103,6 +103,12 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 	public $userRelationCallback;
 
 	/**
+	 * @var bool whether or not to use article types to handle full articles different
+	 * from text blocks etc. At the moment this is only used for searching and filtering articles.
+	 */
+	public $useArticleTypes = true;
+
+	/**
 	 * @var bool whether or not to enable client validation in backend forms
 	 */
 	public $backendEnableClientValidation = false;
@@ -175,6 +181,12 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 		'create'=>'create',
 		'update'=>'update',
 	];
+
+	/**
+	 * @var string the alias which defines the path where the attachments of the articles will be saved.
+	 * If the folder does not exist, it will be created.
+	 */
+	public $attachmentAlias = '@runtime/article_attachments';
 
 	/**
 	 * @inheritdoc

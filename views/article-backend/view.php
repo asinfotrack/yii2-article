@@ -2,6 +2,8 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
+use asinfotrack\yii2\article\models\Article;
+use asinfotrack\yii2\article\Module;
 use asinfotrack\yii2\toolbox\widgets\Button;
 
 /* @var $this \yii\web\View */
@@ -49,6 +51,11 @@ if (count($model->articleCategories) > 0) {
 			'attribute'=>'canonical',
 			'format'=>'html',
 			'value'=>Html::tag('code', $model->canonical),
+		],
+		[
+			'attribute'=>'type',
+			'value'=>Article::typeFilter()[$model->type],
+			'visible'=>Module::getInstance()->useArticleTypes,
 		],
 		'title',
 		'title_head',

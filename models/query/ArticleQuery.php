@@ -52,6 +52,18 @@ class ArticleQuery extends \yii\db\ActiveQuery
 	}
 
 	/**
+	 * Filter articles by their type(s)
+	 *
+	 * @param integer|integer[] $types one or several types
+	 * @return \asinfotrack\yii2\article\models\query\ArticleQuery $this self for chaining
+	 */
+	public function type($types)
+	{
+		$this->andWhere(['article.type'=>$types]);
+		return $this;
+	}
+
+	/**
 	 * Named scope to filter articles by their assigned categories.
 	 * The param can be specified with a single id or category model or a mixed array of the two
 	 * types.

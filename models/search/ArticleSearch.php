@@ -21,7 +21,7 @@ class ArticleSearch extends \asinfotrack\yii2\article\models\Article
 	public function rules()
 	{
 		return [
-			[['id','published_at','published_from','published_to','created','created_by','updated','updated_by'], 'integer'],
+			[['id','type','published_at','published_from','published_to','created','created_by','updated','updated_by'], 'integer'],
 			[['canonical','title','title_head','title_menu','meta_keywords','meta_description','intro','content'], 'safe'],
 		];
 	}
@@ -51,6 +51,7 @@ class ArticleSearch extends \asinfotrack\yii2\article\models\Article
 		if ($this->load($params) && !$this->validate()) {
 			$query->andFilterWhere([
 				'article.id'=>$this->id,
+				'article.type'=>$this->type,
 				'article.published_at'=>$this->published_at,
 				'article.published_from'=>$this->published_from,
 				'article.published_to'=>$this->published_to,
