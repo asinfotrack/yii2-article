@@ -29,7 +29,7 @@ class ArticleAttachmentQuery extends \yii\db\ActiveQuery
 			$article = $article instanceof Article ? $article->id : $article;
 		}
 
-		$this->andWhere(['article_link.article_id'=>$articles]);
+		$this->andWhere(['article_attachment.article_id'=>$articles]);
 		return $this;
 	}
 
