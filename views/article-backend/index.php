@@ -1,5 +1,6 @@
 <?php
 
+use asinfotrack\yii2\toolbox\widgets\grid\AdvancedActionColumn;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\helpers\Html;
@@ -54,9 +55,7 @@ $this->title = Yii::t('app', 'Articles');
 			},
 		],
 		[
-			'class'=>ActionColumn::className(),
-			'options'=>['style'=>'width: 100px;'],
-			'contentOptions'=>['class'=>'text-center'],
+			'class'=>AdvancedActionColumn::className(),
 		],
 	],
 ]); ?>
