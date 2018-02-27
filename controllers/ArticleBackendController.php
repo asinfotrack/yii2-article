@@ -5,8 +5,6 @@ use Yii;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use asinfotrack\yii2\article\Module;
-use asinfotrack\yii2\article\models\ArticleLink;
-use asinfotrack\yii2\article\models\search\ArticleLinkSearch;
 
 /**
  * Controller to manage articles in the backend
@@ -56,22 +54,10 @@ class ArticleBackendController extends \yii\web\Controller
 	public function actionView($id)
 	{
 		$model = $this->findModel($id);
-		$linkModel = new ArticleLink(['article_id'=>$model->id]);
 		$showArticlePreview = Module::getInstance()->enableArticlePreview;
-
-		$linkSearchModel = new ArticleLinkSearch();
-		$linkDataProvider = $linkSearchModel->search(Yii::$app->request->queryParams);
-
-		if ($linkModel->load(Yii::$app->request->post())) {
-			$linkModel->article_id = $model->id;
-			if ($linkModel->save()) return $this->refresh();
-		}
 
 		return $this->render(Module::getInstance()->backendArticleViews['view'], [
 			'model'=>$model,
-			'linkModel'=>$linkModel,
-			'linkDataProvider'=>$linkDataProvider,
-			'linkSearchModel'=>$linkSearchModel,
 			'showArticlePreview'=>$showArticlePreview,
 		]);
 	}
