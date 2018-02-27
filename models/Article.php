@@ -10,10 +10,10 @@ use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\validators\ExistValidator;
-use asinfotrack\yii2\article\components\ArticleRenderer;
-use asinfotrack\yii2\article\helpers\AttachmentHelper;
 use asinfotrack\yii2\article\Module;
+use asinfotrack\yii2\article\components\ArticleRenderer;
 use asinfotrack\yii2\article\models\query\ArticleQuery;
+use asinfotrack\yii2\attachments\behaviors\AttachmentBehavior;
 
 /**
  * This is the model class for table "article"
@@ -74,6 +74,7 @@ class Article extends \yii\db\ActiveRecord
 	 */
 	protected $categoryIds = null;
 
+
 	/**
 	 * @inheritdoc
 	 */
@@ -97,6 +98,9 @@ class Article extends \yii\db\ActiveRecord
 				'class'=>BlameableBehavior::className(),
 				'createdByAttribute'=>'created_by',
 				'updatedByAttribute'=>'updated_by',
+			],
+			'attachments'=>[
+				'class'=>AttachmentBehavior::className(),
 			],
 			'slug'=>[
 				'class'=>SluggableBehavior::className(),
@@ -254,11 +258,6 @@ class Article extends \yii\db\ActiveRecord
 			return false;
 		}
 
-		//create attachment folder
-		if (!AttachmentHelper::createDirectoryForArticle($this->id)) {
-			return false;
-		}
-
 		//remove old relations to categories
 		$oldCats = $this->articleCategories;
 		$oldCatIds = ArrayHelper::getColumn($oldCats, 'id');
@@ -276,16 +275,6 @@ class Article extends \yii\db\ActiveRecord
 		}
 
 		return true;
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function delete()
-	{
-		$resParent = parent::delete();
-		if ($resParent) AttachmentHelper::deleteDirectoryForModel($this->id);
-		return $resParent;
 	}
 
 	/**

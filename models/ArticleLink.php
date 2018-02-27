@@ -3,8 +3,10 @@ namespace asinfotrack\yii2\article\models;
 
 use Yii;
 use yii\base\InvalidCallException;
-use asinfotrack\yii2\article\models\query\ArticleLinkQuery;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 use asinfotrack\yii2\article\Module;
+use asinfotrack\yii2\article\models\query\ArticleLinkQuery;
 
 /**
  * This is the model class for table "article"
@@ -19,7 +21,7 @@ use asinfotrack\yii2\article\Module;
  * @property boolean $is_new_tab
  * @property string $url
  * @property string $title
- * @property string $desc
+ * @property string $description
  * @property integer $created
  * @property integer $created_by
  * @property integer $updated
@@ -43,13 +45,32 @@ class ArticleLink extends \yii\db\ActiveRecord
 	/**
 	 * @inheritdoc
 	 */
+	public function behaviors()
+	{
+		return [
+			'timestamp'=>[
+				'class'=>TimestampBehavior::className(),
+				'createdAtAttribute'=>'created',
+				'updatedAtAttribute'=>'updated',
+			],
+			'blameable'=>[
+				'class'=>BlameableBehavior::className(),
+				'createdByAttribute'=>'created_by',
+				'updatedByAttribute'=>'updated_by',
+			],
+		];
+	}
+
+	/**
+	 * @inheritdoc
+	 */
 	public function rules()
 	{
 		return [
 			[['url','title','description'], 'trim'],
 			[['url','title','description'], 'default'],
 
-			[['article_id','title'], 'required'],
+			[['article_id','url','title'], 'required'],
 
 			[['article_id','order'], 'integer'],
 			[['is_new_tab'], 'boolean'],

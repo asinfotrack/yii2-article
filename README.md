@@ -28,6 +28,7 @@ to the `require` section of your `composer.json` file.
 After downloading you need to apply the migration creating the required tables:
 
     yii migrate --migrationPath=@vendor/asinfotrack/yii2-article/migrations
+    yii migrate --migrationPath=@vendor/asinfotrack/yii2-attachments/migrations
     
 To remove the table just do the same migration downwards.
 

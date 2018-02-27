@@ -6,7 +6,10 @@ use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use asinfotrack\yii2\article\Module;
 use asinfotrack\yii2\article\models\Article;
+use asinfotrack\yii2\article\models\ArticleLink;
 use asinfotrack\yii2\article\models\search\ArticleSearch;
+use asinfotrack\yii2\article\models\search\ArticleLinkSearch;
+use asinfotrack\yii2\attachments\models\Attachment;
 
 /**
  * Controller to manage articles in the backend
@@ -56,10 +59,31 @@ class ArticleBackendController extends \yii\web\Controller
 	public function actionView($id)
 	{
 		$model = $this->findModel($id);
+		$attachmentModel = new Attachment(['subject'=>$model]);
+		$linkModel = new ArticleLink(['article_id'=>$model->id]);
 		$showArticlePreview = Module::getInstance()->enableArticlePreview;
+
+		$linkSearchModel = new ArticleLinkSearch();
+		$linkDataProvider = $linkSearchModel->search(Yii::$app->request->queryParams);
+
+		$refreshRequested = false;
+		if ($attachmentModel->load(Yii::$app->request->post())) {
+			if ($attachmentModel->save()) $refreshRequested = true;
+		}
+		if ($linkModel->load(Yii::$app->request->post())) {
+			$linkModel->article_id = $model->id;
+			if ($linkModel->save()) $refreshRequested = true;
+		}
+		if ($refreshRequested) {
+			return $this->refresh();
+		}
 
 		return $this->render(Module::getInstance()->backendArticleViews['view'], [
 			'model'=>$model,
+			'attachmentModel'=>$attachmentModel,
+			'linkModel'=>$linkModel,
+			'linkDataProvider'=>$linkDataProvider,
+			'linkSearchModel'=>$linkSearchModel,
 			'showArticlePreview'=>$showArticlePreview,
 		]);
 	}

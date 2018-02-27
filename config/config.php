@@ -26,6 +26,24 @@ return [
 		],
 	],
 
+	'modules'=>[
+		'attachments'=>[
+			'class'=>'asinfotrack\yii2\attachments\Module',
+
+			'userRelationCallback'=>function ($model, $attribute) {
+				return $model->hasOne('app\models\User', ['id'=>$attribute]);
+			},
+			'backendAccessControl'=>[
+				'class'=>'yii\filters\AccessControl',
+				'rules'=>[
+					['allow'=>true, 'roles'=>['@']],
+				],
+			],
+		],
+	],
+
+
+
 	'params'=>[
 		'treeLevelPrefix'=>'—',
 	],
