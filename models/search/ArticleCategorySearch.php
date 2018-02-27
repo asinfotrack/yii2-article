@@ -54,7 +54,9 @@ class ArticleCategorySearch extends \asinfotrack\yii2\article\models\ArticleCate
 			],
 		]);
 
-		if ($this->load($params) && !$this->validate()) {
+		$this->detachBehavior('slug');
+
+		if ($this->load($params) && $this->validate()) {
 			$query->andFilterWhere([
 				'article_category.id'=>$this->id,
 				'article_category.created'=>$this->created,

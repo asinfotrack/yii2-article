@@ -48,7 +48,9 @@ class ArticleSearch extends \asinfotrack\yii2\article\models\Article
 			'sort'=>['defaultOrder'=>['title'=>SORT_ASC]],
 		]);
 
-		if ($this->load($params) && !$this->validate()) {
+		$this->detachBehavior('slug');
+
+		if ($this->load($params) && $this->validate()) {
 			$query->andFilterWhere([
 				'article.id'=>$this->id,
 				'article.type'=>$this->type,
