@@ -159,10 +159,9 @@ $modalLink = Modal::begin([
 	'options'=>$modalLinkOptions,
 	'header'=>Html::tag('h4', $modalLinkTitle),
 	'toggleButton'=>[
-		'tag'=>'button',
+		'tag'=>'a',
 		'label'=>$modalLinkTitle,
 		'class'=>'btn-primary btn',
-		'data-target'=>'modal-link',//needs to be set manually due to a bug in Modal widget
 	],
 ]);
 ?>
