@@ -1,6 +1,7 @@
 <?php
 namespace asinfotrack\yii2\article\models\search;
 
+use asinfotrack\yii2\article\Module;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use asinfotrack\yii2\article\models\ArticleCategory;
@@ -42,7 +43,7 @@ class ArticleCategorySearch extends \asinfotrack\yii2\article\models\ArticleCate
 	 */
 	public function search($params)
 	{
-		$query = ArticleCategory::find()->excludeRoot();
+		$query = call_user_func([Module::getInstance()->classMap['articleCategoryModel'], 'find'])->excludeRoot();
 		$dataProvider = new ActiveDataProvider([
 			'query'=>$query,
 			'sort'=>[

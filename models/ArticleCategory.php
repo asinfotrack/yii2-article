@@ -117,7 +117,7 @@ class ArticleCategory extends \yii\db\ActiveRecord
 					$msg = Yii::t('app', 'A category can not be assigned to itself.');
 					$this->addError($attribute, $msg);
 				}
-				if (ArticleCategory::findOne($parentId)->isChildOf($this)) {
+				if (call_user_func([Module::getInstance()->classMap['articleCategoryModel'], 'findOne'], $parentId)->isChildOf($this)) {
 					$msg = Yii::t('app', 'You can not assign a category to one if its child-categories');
 					$this->addError($attribute, $msg);
 				}

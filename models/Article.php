@@ -13,7 +13,6 @@ use yii\validators\ExistValidator;
 use asinfotrack\yii2\article\Module;
 use asinfotrack\yii2\article\components\ArticleRenderer;
 use asinfotrack\yii2\article\models\query\ArticleQuery;
-use asinfotrack\yii2\attachments\behaviors\AttachmentBehavior;
 
 /**
  * This is the model class for table "article"
@@ -268,7 +267,8 @@ class Article extends \yii\db\ActiveRecord
 		}
 
 		//add missing relations
-		$newCats = ArticleCategory::find()->where(['article_category.id'=>$this->categoryIds])->all();
+		$query = call_user_func([Module::getInstance()->classMap['articleCategoryModel'], 'find']);
+		$newCats = $query->where(['article_category.id'=>$this->categoryIds])->all();
 		foreach ($newCats as $cat) {
 			if (in_array($cat->id, $oldCatIds)) continue;
 			$this->link('articleCategories', $cat);

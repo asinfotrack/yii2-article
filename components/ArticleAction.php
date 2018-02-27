@@ -58,7 +58,7 @@ class ArticleAction extends \yii\web\ViewAction
 			throw new InvalidConfigException($msg = Yii::t('app', 'Article must be set'));
 		}
 		if (!($this->article instanceof Article)) {
-			$article = Article::findOne($this->article);
+			$article = call_user_func([Module::getInstance()->classMap['articleModel'], 'findOne'], $this->article);
 			if ($article === null) $this->throwNotFound($this->article);
 			$this->article = $article;
 		}

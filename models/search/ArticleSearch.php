@@ -1,9 +1,9 @@
 <?php
 namespace asinfotrack\yii2\article\models\search;
 
+use asinfotrack\yii2\article\Module;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use asinfotrack\yii2\article\models\Article;
 
 /**
  * Search model for article models
@@ -42,7 +42,7 @@ class ArticleSearch extends \asinfotrack\yii2\article\models\Article
 	 */
 	public function search($params)
 	{
-		$query = Article::find();
+		$query = call_user_func([Module::getInstance()->classMap['articleModel'], 'find']);
 		$dataProvider = new ActiveDataProvider([
 			'query'=>$query,
 			'sort'=>['defaultOrder'=>['title'=>SORT_ASC]],

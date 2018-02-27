@@ -5,8 +5,6 @@ use Yii;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use asinfotrack\yii2\article\Module;
-use asinfotrack\yii2\article\models\ArticleCategory;
-use asinfotrack\yii2\article\models\search\ArticleCategorySearch;
 
 /**
  * Controller to manage article categories in the backend
@@ -44,7 +42,7 @@ class ArticleCategoryBackendController extends \yii\web\Controller
 
 	public function actionIndex()
 	{
-		$searchModel = new ArticleCategorySearch();
+		$searchModel = Yii::createObject(Module::getInstance()->classMap['articleCategorySearchModel']);
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 		return $this->render(Module::getInstance()->backendArticleViews['index'], [
@@ -64,12 +62,12 @@ class ArticleCategoryBackendController extends \yii\web\Controller
 
 	public function actionCreate()
 	{
-		/* @var $model \creocoder\nestedsets\NestedSetsBehavior */
-		$model = new ArticleCategory();
+		/* @var $model \creocoder\nestedsets\NestedSetsBehavior|\asinfotrack\yii2\article\models\ArticleCategory */
+		$model = Yii::createObject(Module::getInstance()->classMap['articleCategoryModel']);
 		$loaded = $model->load(Yii::$app->request->post());
 
 		if ($loaded && $model->validate()) {
-			$parentCategory = ArticleCategory::findOne( $model->parentId !== null ? $model->parentId : 1);
+			$parentCategory = $this->findModel($model->parentId !== null ? $model->parentId : 1);
 
 			if ($model->appendTo($parentCategory)) {
 				return $this->redirect(['article-category-backend/view', 'id'=>$model->id]);
@@ -83,7 +81,7 @@ class ArticleCategoryBackendController extends \yii\web\Controller
 
 	public function actionUpdate($id)
 	{
-		/* @var $model \creocoder\nestedsets\NestedSetsBehavior */
+		/* @var $model \creocoder\nestedsets\NestedSetsBehavior|\asinfotrack\yii2\article\models\ArticleCategory */
 		$model = $this->findModel($id);
 		$loaded = $model->load(Yii::$app->request->post());
 
@@ -92,7 +90,7 @@ class ArticleCategoryBackendController extends \yii\web\Controller
 			$newParentId = (int) $model->parentId;
 
 			if ($oldParentId !== $newParentId) {
-				$res = $model->appendTo(ArticleCategory::findOne($newParentId), false);
+				$res = $model->appendTo($this->findModel($newParentId), false);
 			} else {
 				$res = $model->save(false);
 			}
@@ -145,9 +143,9 @@ class ArticleCategoryBackendController extends \yii\web\Controller
 	 */
 	protected function findModel($idOrCanonical)
 	{
-		$model = ArticleCategory::findOne($idOrCanonical);
+		$model = call_user_func([Module::getInstance()->classMap['articleCategoryModel'], 'findOne'], $idOrCanonical);
 		if ($model === null) {
-			$msg = Yii::t('app', 'No article found with `{value}`', ['value'=>$idOrCanonical]);
+			$msg = Yii::t('app', 'No article category found with `{value}`', ['value'=>$idOrCanonical]);
 			throw new NotFoundHttpException($msg);
 		}
 		return $model;

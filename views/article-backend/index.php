@@ -1,20 +1,19 @@
 <?php
-
-use asinfotrack\yii2\toolbox\widgets\grid\AdvancedActionColumn;
-use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use asinfotrack\yii2\article\models\Article;
 use asinfotrack\yii2\toolbox\widgets\Button;
+use asinfotrack\yii2\toolbox\widgets\grid\AdvancedActionColumn;
 use asinfotrack\yii2\toolbox\widgets\grid\AdvancedDataColumn;
 use asinfotrack\yii2\toolbox\widgets\grid\IdColumn;
+use asinfotrack\yii2\article\Module;
 
 /* @var $this \yii\web\View */
 /* @var $dataProvider \yii\data\ActiveDataProvider */
 /* @var $searchModel \asinfotrack\yii2\article\models\search\ArticleSearch */
 
 $this->title = Yii::t('app', 'Articles');
+$typeFilter = call_user_func([Module::getInstance()->classMap['articleModel'], 'typeFilter']);
 ?>
 
 <?= Button::widget([
@@ -49,9 +48,9 @@ $this->title = Yii::t('app', 'Articles');
 			'class'=>AdvancedDataColumn::className(),
 			'attribute'=>'type',
 			'columnWidth'=>10,
-			'filter'=>Article::typeFilter(),
-			'value'=>function ($model, $key, $index, $column) {
-				return Article::typeFilter()[$model->type];
+			'filter'=>$typeFilter,
+			'value'=>function ($model, $key, $index, $column) use ($typeFilter) {
+				return $typeFilter[$model->type];
 			},
 		],
 		[

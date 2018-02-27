@@ -149,7 +149,7 @@ class Articles extends \yii\widgets\ListView
 	protected static function findArticle($article, $throwException=true)
 	{
 		//lookup article model
-		$model = Article::findOne($article);
+		$model = call_user_func([Module::getInstance()->classMap['articleModel'], 'findOne'], $article);
 
 		//throw exception if desired an no article found
 		if ($model === null && $throwException) {

@@ -3,8 +3,6 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use asinfotrack\yii2\article\Module;
-use asinfotrack\yii2\article\models\Article;
-use asinfotrack\yii2\article\models\ArticleCategory;
 
 /* @var $this \yii\web\View */
 /* @var $model \asinfotrack\yii2\article\models\Article */
@@ -21,7 +19,7 @@ $form = ActiveForm::begin([
 <?php if ($module->useArticleTypes): ?>
 <fieldset>
 	<legend><?= Yii::t('app', 'Article type specification') ?></legend>
-	<?= $form->field($model, 'type')->dropDownList(Article::typeFilter()) ?>
+	<?= $form->field($model, 'type')->dropDownList($model::typeFilter()) ?>
 </fieldset>
 <?php endif; ?>
 
@@ -63,7 +61,10 @@ $form = ActiveForm::begin([
 
 <fieldset>
 	<legend><?= Yii::t('app', 'Category assignments') ?></legend>
-	<?php $catData = ArrayHelper::map(ArticleCategory::find()->excludeRoot()->all(), 'id', 'treeLabel') ?>
+	<?php
+		$query = call_user_func([Module::getInstance()->classMap['articleCategoryModel'], 'find']);
+		$catData = ArrayHelper::map($query->excludeRoot()->all(), 'id', 'treeLabel')
+	?>
 	<?= $form->field($model, 'categoryIds')->dropDownList($catData, ['multiple'=>true, 'size'=>count($catData) <= 5 ? 5 : 10]) ?>
 </fieldset>
 

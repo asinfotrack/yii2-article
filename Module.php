@@ -1,7 +1,6 @@
 <?php
 namespace asinfotrack\yii2\article;
 
-use Yii;
 use yii\helpers\ArrayHelper;
 use yii\jui\DatePicker;
 
@@ -16,6 +15,16 @@ use yii\jui\DatePicker;
  */
 class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 {
+
+	/**
+	 * @var array array containing the classes to use for the individual model components.
+	 */
+	public $classMap = [
+		'articleModel'=>'asinfotrack\yii2\article\models\Article',
+		'articleSearchModel'=>'asinfotrack\yii2\article\models\search\ArticleSearch',
+		'articleCategoryModel'=>'asinfotrack\yii2\article\models\ArticleCategory',
+		'articleCategorySearchModel'=>'asinfotrack\yii2\article\models\search\ArticleCategorySearch',
+	];
 
 	/**
 	 * @var callable|\Closure an optional callback to create the input field for the intro of

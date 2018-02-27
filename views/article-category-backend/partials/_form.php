@@ -2,7 +2,6 @@
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use asinfotrack\yii2\article\Module;
-use asinfotrack\yii2\article\models\ArticleCategory;
 
 /* @var $this \yii\web\View */
 /* @var $model \asinfotrack\yii2\article\models\ArticleCategory|\creocoder\nestedsets\NestedSetsBehavior */
@@ -10,7 +9,8 @@ use asinfotrack\yii2\article\models\ArticleCategory;
 $catData = [];
 $catDataOptions = [];
 $childIds = $model->children()->select('id')->column();
-foreach (ArticleCategory::find()->excludeRoot()->all() as $category) {
+$query = call_user_func([Module::getInstance()->classMap['articleCategoryModel'], 'find']);
+foreach ($query->excludeRoot()->all() as $category) {
 	$catData[$category->id] = $category->treeLabel;
 	$catDataOptions[$category->id] = [
 		'disabled'=>$model->id === $category->id || in_array($category->id, $childIds),
@@ -37,7 +37,7 @@ $form = ActiveForm::begin([
 	<legend><?= Yii::t('app', 'Settings') ?></legend>
 	<?= $form->field($model, 'parentId')->dropDownList($catData, [
 		'size'=>10,
-		'prompt'=>['options'=>['value'=>1], 'text'=>Yii::t('app', 'None / new root cetegory')],
+		'prompt'=>['options'=>['value'=>1], 'text'=>Yii::t('app', 'None / new root category')],
 		'options'=>$catDataOptions,
 	]) ?>
 </fieldset>

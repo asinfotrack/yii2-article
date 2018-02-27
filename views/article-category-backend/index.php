@@ -1,6 +1,4 @@
 <?php
-
-use yii\base\Action;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\helpers\Html;
@@ -10,7 +8,7 @@ use asinfotrack\yii2\toolbox\widgets\Button;
 use asinfotrack\yii2\toolbox\widgets\grid\AdvancedActionColumn;
 use asinfotrack\yii2\toolbox\widgets\grid\AdvancedDataColumn;
 use asinfotrack\yii2\toolbox\widgets\grid\IdColumn;
-use asinfotrack\yii2\article\models\Article;
+use asinfotrack\yii2\article\Module;
 
 /* @var $this \yii\web\View */
 /* @var $dataProvider \yii\data\ActiveDataProvider */
@@ -56,7 +54,8 @@ $this->title = Yii::t('app', 'Articles');
 			'class'=>IdColumn::className(),
 			'label'=>Yii::t('app', 'Articles'),
 			'value'=>function ($model, $key, $index, $column) {
-				return Article::find()->articleCategories($model)->count();
+				$query = call_user_func([Module::getInstance()->classMap['articleModel'], 'find']);
+				return $query->articleCategories($model)->count();
 			},
 		],
 

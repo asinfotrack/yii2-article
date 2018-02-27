@@ -4,58 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "0873eb00da939438f9ed565fde7980bb",
+    "content-hash": "8b3991563e63eea4bcbb4552031c709b",
     "packages": [
-        {
-            "name": "asinfotrack/yii2-attachments",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/asinfotrack/yii2-attachments.git",
-                "reference": "6c3542d3d08357abbe5eedfc457a3b8c6bc0458a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/asinfotrack/yii2-attachments/zipball/6c3542d3d08357abbe5eedfc457a3b8c6bc0458a",
-                "reference": "6c3542d3d08357abbe5eedfc457a3b8c6bc0458a",
-                "shasum": ""
-            },
-            "require": {
-                "asinfotrack/yii2-toolbox": "~0.8.5",
-                "php": ">=5.4.0",
-                "yiisoft/yii2": "~2.0.6",
-                "yiisoft/yii2-bootstrap": "~2.0.0"
-            },
-            "type": "yii2-extension",
-            "autoload": {
-                "psr-4": {
-                    "asinfotrack\\yii2\\attachments\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Pascal Mueller",
-                    "email": "pascal.mueller@asinfotrack.ch",
-                    "homepage": "http://www.asinfotrack.ch"
-                }
-            ],
-            "description": "Yii2-attachments is a module and set of functionality to add attachments to a model in a generic way",
-            "keywords": [
-                "Behavior",
-                "action",
-                "attachment",
-                "attachments",
-                "bundle",
-                "module",
-                "widget",
-                "yii2"
-            ],
-            "time": "2018-02-27T11:54:01+00:00"
-        },
         {
             "name": "asinfotrack/yii2-toolbox",
             "version": "0.8.8",
@@ -1009,9 +959,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "asinfotrack/yii2-attachments": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

@@ -4,7 +4,7 @@ namespace asinfotrack\yii2\article\components;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\web\NotFoundHttpException;
-use asinfotrack\yii2\article\models\Article;
+use asinfotrack\yii2\article\Module;
 use asinfotrack\yii2\article\models\ArticleCategory;
 
 /**
@@ -70,7 +70,7 @@ class ArticleCategoryAction extends \yii\web\ViewAction
 			if ($entry instanceof ArticleCategory) {
 				$entry = $entry->id;
 			} else {
-				$articleCategory = ArticleCategory::findOne($entry);
+				$articleCategory = call_user_func([Module::getInstance()->classMap['articleCategoryModel'], 'findOne'], $entry);
 				if ($articleCategory === null) $this->throwNotFound($entry);
 				$entry = $articleCategory->id;
 			}
@@ -82,8 +82,9 @@ class ArticleCategoryAction extends \yii\web\ViewAction
 	 */
 	protected function render($viewName)
 	{
-		//finish widget config with overwriting items property
-		$query = Article::find()->articleCategories($this->articleCategories)->orderPublishedAt();
+		//TODO: finish widget config with overwriting items property
+		$query = call_user_func([Module::getInstance()->classMap['articleModel'], 'find']);
+		$query = $query->articleCategories($this->articleCategories)->orderPublishedAt();
 		if ($this->publishedOnly) $query->published(true);
 		$this->widgetConfig['items'] = $query;
 

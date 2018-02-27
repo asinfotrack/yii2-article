@@ -1,6 +1,7 @@
 <?php
 namespace asinfotrack\yii2\article\components;
 
+use asinfotrack\yii2\article\Module;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
@@ -201,7 +202,7 @@ class ArticleRenderer extends \yii\base\Component
 	{
 		//try to fetch article if string was provided
 		if (!($article instanceof Article)) {
-			$article = Article::findOne($article);
+			$article = call_user_func([Module::getInstance()->classMap['articleModel'], 'findOne'], $article);
 			if ($article === null) {
 				$msg = Yii::t('app', 'No article found with entry `{key}`', ['key'=>$article]);
 				return Html::tag('span', $msg, ['class'=>'label label-danger']);
