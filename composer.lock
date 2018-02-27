@@ -4,20 +4,70 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8b3991563e63eea4bcbb4552031c709b",
+    "content-hash": "0873eb00da939438f9ed565fde7980bb",
     "packages": [
         {
-            "name": "asinfotrack/yii2-toolbox",
-            "version": "0.8.7",
+            "name": "asinfotrack/yii2-attachments",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/asinfotrack/yii2-toolbox.git",
-                "reference": "5dac376149db37c9848d76aacc2be8f42cb5af60"
+                "url": "https://github.com/asinfotrack/yii2-attachments.git",
+                "reference": "6c3542d3d08357abbe5eedfc457a3b8c6bc0458a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/asinfotrack/yii2-toolbox/zipball/5dac376149db37c9848d76aacc2be8f42cb5af60",
-                "reference": "5dac376149db37c9848d76aacc2be8f42cb5af60",
+                "url": "https://api.github.com/repos/asinfotrack/yii2-attachments/zipball/6c3542d3d08357abbe5eedfc457a3b8c6bc0458a",
+                "reference": "6c3542d3d08357abbe5eedfc457a3b8c6bc0458a",
+                "shasum": ""
+            },
+            "require": {
+                "asinfotrack/yii2-toolbox": "~0.8.5",
+                "php": ">=5.4.0",
+                "yiisoft/yii2": "~2.0.6",
+                "yiisoft/yii2-bootstrap": "~2.0.0"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "asinfotrack\\yii2\\attachments\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pascal Mueller",
+                    "email": "pascal.mueller@asinfotrack.ch",
+                    "homepage": "http://www.asinfotrack.ch"
+                }
+            ],
+            "description": "Yii2-attachments is a module and set of functionality to add attachments to a model in a generic way",
+            "keywords": [
+                "Behavior",
+                "action",
+                "attachment",
+                "attachments",
+                "bundle",
+                "module",
+                "widget",
+                "yii2"
+            ],
+            "time": "2018-02-27T11:54:01+00:00"
+        },
+        {
+            "name": "asinfotrack/yii2-toolbox",
+            "version": "0.8.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/asinfotrack/yii2-toolbox.git",
+                "reference": "69ae90f499aac301ddee817a95b6a1ab3afadf83"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/asinfotrack/yii2-toolbox/zipball/69ae90f499aac301ddee817a95b6a1ab3afadf83",
+                "reference": "69ae90f499aac301ddee817a95b6a1ab3afadf83",
                 "shasum": ""
             },
             "require": {
@@ -35,6 +85,9 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
             "authors": [
                 {
                     "name": "Pascal Mueller",
@@ -50,7 +103,7 @@
                 "widgets",
                 "yii2"
             ],
-            "time": "2017-11-18T18:11:05+00:00"
+            "time": "2017-12-10T14:15:54+00:00"
         },
         {
             "name": "bower-asset/bootstrap",
@@ -104,16 +157,16 @@
         },
         {
             "name": "bower-asset/inputmask",
-            "version": "3.3.10",
+            "version": "3.3.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/RobinHerbots/Inputmask.git",
-                "reference": "14873e5775964275d13621cbe2b52e4448af3707"
+                "reference": "5e670ad62f50c738388d4dcec78d2888505ad77b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RobinHerbots/Inputmask/zipball/14873e5775964275d13621cbe2b52e4448af3707",
-                "reference": "14873e5775964275d13621cbe2b52e4448af3707",
+                "url": "https://api.github.com/repos/RobinHerbots/Inputmask/zipball/5e670ad62f50c738388d4dcec78d2888505ad77b",
+                "reference": "5e670ad62f50c738388d4dcec78d2888505ad77b",
                 "shasum": ""
             },
             "require": {
@@ -160,7 +213,7 @@
                 "mask",
                 "plugins"
             ],
-            "time": "2017-10-16T09:33:03+00:00"
+            "time": "2017-11-21T11:46:23+00:00"
         },
         {
             "name": "bower-asset/jquery",
@@ -196,16 +249,16 @@
         },
         {
             "name": "bower-asset/jquery-ui",
-            "version": "1.11.4",
+            "version": "1.12.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/components/jqueryui.git",
-                "reference": "c34f8dbf3ba57b3784b93f26119f436c0e8288e1"
+                "reference": "44ecf3794cc56b65954cc19737234a3119d036cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/components/jqueryui/zipball/c34f8dbf3ba57b3784b93f26119f436c0e8288e1",
-                "reference": "c34f8dbf3ba57b3784b93f26119f436c0e8288e1",
+                "url": "https://api.github.com/repos/components/jqueryui/zipball/44ecf3794cc56b65954cc19737234a3119d036cc",
+                "reference": "44ecf3794cc56b65954cc19737234a3119d036cc",
                 "shasum": ""
             },
             "require": {
@@ -218,7 +271,10 @@
                 ],
                 "bower-asset-ignore": []
             },
-            "time": "2015-03-13T14:48:12+00:00"
+            "license": [
+                "MIT"
+            ],
+            "time": "2016-09-16T05:47:55+00:00"
         },
         {
             "name": "bower-asset/punycode",
@@ -414,16 +470,16 @@
         },
         {
             "name": "ezyang/htmlpurifier",
-            "version": "v4.9.3",
+            "version": "v4.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ezyang/htmlpurifier.git",
-                "reference": "95e1bae3182efc0f3422896a3236e991049dac69"
+                "reference": "d85d39da4576a6934b72480be6978fb10c860021"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/95e1bae3182efc0f3422896a3236e991049dac69",
-                "reference": "95e1bae3182efc0f3422896a3236e991049dac69",
+                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/d85d39da4576a6934b72480be6978fb10c860021",
+                "reference": "d85d39da4576a6934b72480be6978fb10c860021",
                 "shasum": ""
             },
             "require": {
@@ -457,7 +513,7 @@
             "keywords": [
                 "html"
             ],
-            "time": "2017-06-03T02:28:16+00:00"
+            "time": "2018-02-23T01:58:20+00:00"
         },
         {
             "name": "fortawesome/font-awesome",
@@ -599,16 +655,16 @@
         },
         {
             "name": "yiisoft/yii2",
-            "version": "2.0.13.1",
+            "version": "2.0.14.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "7af96d8da5ea3e9a5dd05d0e734b21c5726a6ddf"
+                "reference": "d99969394c66dc3606134af092b8ec561ea5d7c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/7af96d8da5ea3e9a5dd05d0e734b21c5726a6ddf",
-                "reference": "7af96d8da5ea3e9a5dd05d0e734b21c5726a6ddf",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/d99969394c66dc3606134af092b8ec561ea5d7c6",
+                "reference": "d99969394c66dc3606134af092b8ec561ea5d7c6",
                 "shasum": ""
             },
             "require": {
@@ -695,20 +751,20 @@
                 "framework",
                 "yii2"
             ],
-            "time": "2017-11-14T11:08:21+00:00"
+            "time": "2018-02-24T20:23:06+00:00"
         },
         {
             "name": "yiisoft/yii2-bootstrap",
-            "version": "2.0.7",
+            "version": "2.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-bootstrap.git",
-                "reference": "02a54d868343ed11d02f0f0f8cbbecb590e0cb3f"
+                "reference": "3f49c47924bb9fa5363c3fc7b073d954168cf438"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-bootstrap/zipball/02a54d868343ed11d02f0f0f8cbbecb590e0cb3f",
-                "reference": "02a54d868343ed11d02f0f0f8cbbecb590e0cb3f",
+                "url": "https://api.github.com/repos/yiisoft/yii2-bootstrap/zipball/3f49c47924bb9fa5363c3fc7b073d954168cf438",
+                "reference": "3f49c47924bb9fa5363c3fc7b073d954168cf438",
                 "shasum": ""
             },
             "require": {
@@ -723,7 +779,7 @@
             },
             "autoload": {
                 "psr-4": {
-                    "yii\\bootstrap\\": ""
+                    "yii\\bootstrap\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -732,8 +788,22 @@
             ],
             "authors": [
                 {
+                    "name": "Paul Klimov",
+                    "email": "klimov.paul@gmail.com"
+                },
+                {
+                    "name": "Alexander Makarov",
+                    "email": "sam@rmcreative.ru",
+                    "homepage": "http://rmcreative.ru/"
+                },
+                {
+                    "name": "Antonio Ramirez",
+                    "email": "amigo.cobos@gmail.com"
+                },
+                {
                     "name": "Qiang Xue",
-                    "email": "qiang.xue@gmail.com"
+                    "email": "qiang.xue@gmail.com",
+                    "homepage": "http://www.yiiframework.com/"
                 }
             ],
             "description": "The Twitter Bootstrap extension for the Yii framework",
@@ -741,7 +811,7 @@
                 "bootstrap",
                 "yii2"
             ],
-            "time": "2017-10-09T19:48:22+00:00"
+            "time": "2018-02-16T10:41:52+00:00"
         },
         {
             "name": "yiisoft/yii2-composer",
@@ -795,23 +865,23 @@
         },
         {
             "name": "yiisoft/yii2-gii",
-            "version": "2.0.5",
+            "version": "2.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-gii.git",
-                "reference": "1bd6df6804ca077ec022587905a0d43eb286f507"
+                "reference": "db41f647d9b73702ceb6864fdfce827a72b5ce42"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-gii/zipball/1bd6df6804ca077ec022587905a0d43eb286f507",
-                "reference": "1bd6df6804ca077ec022587905a0d43eb286f507",
+                "url": "https://api.github.com/repos/yiisoft/yii2-gii/zipball/db41f647d9b73702ceb6864fdfce827a72b5ce42",
+                "reference": "db41f647d9b73702ceb6864fdfce827a72b5ce42",
                 "shasum": ""
             },
             "require": {
                 "bower-asset/typeahead.js": "0.10.* | ~0.11.0",
                 "phpspec/php-diff": ">=1.0.2",
-                "yiisoft/yii2": ">=2.0.4",
-                "yiisoft/yii2-bootstrap": "~2.0"
+                "yiisoft/yii2": "~2.0.13",
+                "yiisoft/yii2-bootstrap": "~2.0.0"
             },
             "type": "yii2-extension",
             "extra": {
@@ -844,34 +914,30 @@
                 "gii",
                 "yii2"
             ],
-            "time": "2016-03-18T14:09:46+00:00"
+            "time": "2017-12-22T23:53:06+00:00"
         },
         {
             "name": "yiisoft/yii2-jui",
-            "version": "2.0.6",
+            "version": "2.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-jui.git",
-                "reference": "843a2160cfe30f5c8b0cb2e9dbd8ee6bcf97e71d"
+                "reference": "ce45c16d4fbbe7d1c516d8d0e8311e07f6138eed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-jui/zipball/843a2160cfe30f5c8b0cb2e9dbd8ee6bcf97e71d",
-                "reference": "843a2160cfe30f5c8b0cb2e9dbd8ee6bcf97e71d",
+                "url": "https://api.github.com/repos/yiisoft/yii2-jui/zipball/ce45c16d4fbbe7d1c516d8d0e8311e07f6138eed",
+                "reference": "ce45c16d4fbbe7d1c516d8d0e8311e07f6138eed",
                 "shasum": ""
             },
             "require": {
-                "bower-asset/jquery-ui": "1.11.*@stable",
-                "yiisoft/yii2": ">=2.0.4"
+                "bower-asset/jquery-ui": "~1.12.1",
+                "yiisoft/yii2": "~2.0.4"
             },
             "type": "yii2-extension",
             "extra": {
                 "branch-alias": {
                     "dev-master": "2.0.x-dev"
-                },
-                "asset-installer-paths": {
-                    "npm-asset-library": "vendor/npm",
-                    "bower-asset-library": "vendor/bower"
                 }
             },
             "autoload": {
@@ -894,7 +960,7 @@
                 "jQuery UI",
                 "yii2"
             ],
-            "time": "2016-07-22T22:26:59+00:00"
+            "time": "2017-11-25T15:32:29+00:00"
         },
         {
             "name": "yurkinx/yii2-image",
@@ -943,7 +1009,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "asinfotrack/yii2-attachments": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
