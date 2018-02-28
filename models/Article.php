@@ -98,9 +98,6 @@ class Article extends \yii\db\ActiveRecord
 				'createdByAttribute'=>'created_by',
 				'updatedByAttribute'=>'updated_by',
 			],
-			'attachments'=>[
-				'class'=>AttachmentBehavior::className(),
-			],
 			'slug'=>[
 				'class'=>SluggableBehavior::className(),
 				'slugAttribute'=>'canonical',

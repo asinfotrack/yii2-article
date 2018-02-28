@@ -45,7 +45,7 @@ class ArticleCategoryBackendController extends \yii\web\Controller
 		$searchModel = Yii::createObject(Module::getInstance()->classMap['articleCategorySearchModel']);
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-		return $this->render(Module::getInstance()->backendArticleViews['index'], [
+		return $this->render(Module::getInstance()->backendArticleCategoryViews['index'], [
 			'searchModel'=>$searchModel,
 			'dataProvider'=>$dataProvider,
 		]);
@@ -55,7 +55,7 @@ class ArticleCategoryBackendController extends \yii\web\Controller
 	{
 		$model = $this->findModel($id);
 
-		return $this->render(Module::getInstance()->backendArticleViews['view'], [
+		return $this->render(Module::getInstance()->backendArticleCategoryViews['view'], [
 			'model'=>$model,
 		]);
 	}
@@ -74,7 +74,7 @@ class ArticleCategoryBackendController extends \yii\web\Controller
 			}
 		}
 
-		return $this->render(Module::getInstance()->backendArticleViews['create'], [
+		return $this->render(Module::getInstance()->backendArticleCategoryViews['create'], [
 			'model'=>$model,
 		]);
 	}
@@ -100,7 +100,7 @@ class ArticleCategoryBackendController extends \yii\web\Controller
 			}
 		}
 
-		return $this->render(Module::getInstance()->backendArticleViews['update'], [
+		return $this->render(Module::getInstance()->backendArticleCategoryViews['update'], [
 			'model'=>$model,
 		]);
 	}
