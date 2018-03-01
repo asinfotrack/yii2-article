@@ -103,9 +103,15 @@ class Article extends \yii\db\ActiveRecord
 				'slugAttribute'=>'canonical',
 				'ensureUnique'=>true,
 				'value'=>function ($event) {
-					return sprintf('%s', Inflector::slug($this->title));
+					if (is_callable(Module::getInstance()->slugValueCallback)) {
+						return call_user_func(Module::getInstance()->slugValueCallback, $event->sender);
+					}
+					return Inflector::slug($this->title);
 				},
 				'uniqueSlugGenerator'=>function ($baseSlug, $iteration, $model) {
+					if (is_callable(Module::getInstance()->uniqueSlugGeneratorCallback)) {
+						return call_user_func(Module::getInstance()->uniqueSlugGeneratorCallback, $baseSlug, $iteration, $model);
+					}
 					return sprintf('%s_%d', $baseSlug, $iteration+1);
 				},
 			],

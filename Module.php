@@ -2,6 +2,7 @@
 namespace asinfotrack\yii2\article;
 
 use yii\helpers\ArrayHelper;
+use yii\helpers\Inflector;
 use yii\jui\DatePicker;
 
 /**
@@ -190,6 +191,26 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 		'create'=>'create',
 		'update'=>'update',
 	];
+
+	/**
+	 * @var callable optional callable to replace the default behavior of the slug generation
+	 * for articles and article categories. If set, the callable should have the signature
+	 * `function ($sender)` and return the slugged string.
+	 *
+	 * @see \yii\behaviors\SluggableBehavior::$value
+	 */
+	public $slugValueCallback;
+
+	/**
+	 * @var callable optional callable to replace the default behavior of the unique slug behavior
+	 * for articles and article categories. By default the static method of the model class will be used.
+	 *
+	 * If defined, the callable should have the signature `function ($baseSlug, $iteration, $model)` and
+	 * return the unique slug.
+	 *
+	 * @see \yii\behaviors\SluggableBehavior::$uniqueSlugGenerator
+	 */
+	public $uniqueSlugGeneratorCallback;
 
 	/**
 	 * @var string the alias which defines the path where the attachments of the articles will be saved.
