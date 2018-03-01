@@ -9,7 +9,7 @@ use asinfotrack\yii2\toolbox\widgets\Button;
 /* @var $model \asinfotrack\yii2\article\models\Article */
 /* @var $showArticlePreview bool */
 
-$this->title = Yii::t('app', $model->title);
+$this->title = Yii::t('app', 'Article details');
 
 $valCategories = null;
 if (count($model->articleCategories) > 0) {

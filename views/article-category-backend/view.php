@@ -7,7 +7,7 @@ use asinfotrack\yii2\toolbox\widgets\Button;
 /* @var $this \yii\web\View */
 /* @var $model \asinfotrack\yii2\article\models\ArticleCategory|\creocoder\nestedsets\NestedSetsBehavior */
 
-$this->title = Yii::t('app', $model->title);
+$this->title = Yii::t('app', 'Article category details');
 
 //parent category
 $parent = $model->parents(1)->one();
