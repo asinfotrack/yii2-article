@@ -25,6 +25,8 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 		'articleSearchModel'=>'asinfotrack\yii2\article\models\search\ArticleSearch',
 		'articleCategoryModel'=>'asinfotrack\yii2\article\models\ArticleCategory',
 		'articleCategorySearchModel'=>'asinfotrack\yii2\article\models\search\ArticleCategorySearch',
+		'menuItemModel'=>'asinfotrack\yii2\article\models\MenuItem',
+		'menuItemSearchModel'=>'asinfotrack\yii2\article\models\search\MenuItemSearch',
 	];
 
 	/**
@@ -186,6 +188,38 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 	 * @see \asinfotrack\yii2\article\controllers\ArticleBackendController
 	 */
 	public $backendArticleCategoryViews = [
+		'index'=>'index',
+		'view'=>'view',
+		'create'=>'create',
+		'update'=>'update',
+	];
+
+	/**
+	 * @var array configuration for the access control of the menu item controller.
+	 * If set, the config will be added to the behaviors of the controller.
+	 */
+	public $backendMenuItemsAccessControl = [
+		'class'=>'yii\filters\AccessControl',
+		'rules'=>[
+			[
+				'allow'=>true,
+				'roles'=>['@'],
+			],
+		],
+	];
+
+	/**
+	 * @var array array holding the views which will be used for the menu item backend.
+	 * The array is indexed by the action name and the values will be used to get the views. By
+	 * default the views of the module will be used.
+	 *
+	 * To use a local view, use the corresponding view syntax. Usually two slashes are used
+	 * to reference your root view path (eg `//my-folder/my-view`).
+	 *
+	 * See the menu item backend controller for the variables passed to the corresponding views.
+	 * @see \asinfotrack\yii2\article\controllers\MenuItemBackendController
+	 */
+	public $backendMenuItemViews = [
 		'index'=>'index',
 		'view'=>'view',
 		'create'=>'create',

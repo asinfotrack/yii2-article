@@ -43,7 +43,9 @@ class ArticleCategorySearch extends \asinfotrack\yii2\article\models\ArticleCate
 	 */
 	public function search($params)
 	{
+		/* @var $query \asinfotrack\yii2\article\models\query\ArticleCategoryQuery */
 		$query = call_user_func([Module::getInstance()->classMap['articleCategoryModel'], 'find'])->excludeRoot();
+
 		$dataProvider = new ActiveDataProvider([
 			'query'=>$query,
 			'sort'=>[
