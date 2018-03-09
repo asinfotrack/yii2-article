@@ -1,6 +1,7 @@
 <?php
 namespace asinfotrack\yii2\article\controllers;
 
+use asinfotrack\yii2\article\models\MenuItem;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
@@ -43,7 +44,7 @@ class MenuItemBackendController extends \yii\web\Controller
 	public function actionIndex()
 	{
 		$searchModel = Yii::createObject(Module::getInstance()->classMap['menuItemSearchModel']);
-		$dataProvider = $searchModel->search(Yii::$app->request->queryParams, true, false);
+		$dataProvider = $searchModel->search(Yii::$app->request->queryParams, true, true);
 
 		return $this->render(Module::getInstance()->backendMenuItemViews['index'], [
 			'searchModel'=>$searchModel,
@@ -72,6 +73,23 @@ class MenuItemBackendController extends \yii\web\Controller
 			if ($model->appendTo($parentItem)) {
 				return $this->redirect(['menu-item-backend/view', 'id'=>$model->id]);
 			}
+		}
+
+		return $this->render(Module::getInstance()->backendMenuItemViews['create'], [
+			'model'=>$model,
+		]);
+	}
+
+	public function actionCreateMenu()
+	{
+		/* @var $model \creocoder\nestedsets\NestedSetsBehavior|\asinfotrack\yii2\article\models\MenuItem */
+		$model = Yii::createObject(Module::getInstance()->classMap['menuItemModel']);
+		$loaded = $model->load(Yii::$app->request->post());
+		$model->scenario = MenuItem::SCENARIO_MENU;
+		$model->parentId = null;
+
+		if ($loaded && $model->makeRoot()) {
+			return $this->redirect(['menu-item-backend/view', 'id'=>$model->id]);
 		}
 
 		return $this->render(Module::getInstance()->backendMenuItemViews['create'], [

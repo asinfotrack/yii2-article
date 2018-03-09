@@ -13,23 +13,28 @@ use asinfotrack\yii2\article\Module;
 /* @var $this \yii\web\View */
 /* @var $dataProvider \yii\data\ActiveDataProvider */
 /* @var $searchModel \asinfotrack\yii2\article\models\search\MenuItemSearch */
-/* @var $showMoveColumn bool */
-
-if (!isset($showMoveColumn)) $showMoveColumn = true;
 
 /* @var $query \asinfotrack\yii2\article\models\query\MenuItemQuery|\creocoder\nestedsets\NestedSetsQueryBehavior */
 $query = call_user_func([Module::getInstance()->classMap['menuItemModel'], 'find']);
 $menuFilter = ArrayHelper::map($query->roots()->orderBy(['menu_item.label'=>SORT_ASC])->all(), 'tree', 'label');
-
 $typeFilter = call_user_func([Module::getInstance()->classMap['menuItemModel'], 'typeFilter']);
 
-$this->title = Yii::t('app', 'Articles');
+$this->title = Yii::t('app', 'Menu items');
 ?>
 
 <?= Button::widget([
 	'tagName'=>'a',
 	'icon'=>'asterisk',
-	'label'=>Yii::t('app', 'Create a menu item'),
+	'label'=>Yii::t('app', 'Create menu'),
+	'options'=>[
+		'href'=>Url::to(['menu-item-backend/create-menu']),
+		'class'=>'btn btn-primary',
+	],
+]) ?>
+<?= Button::widget([
+	'tagName'=>'a',
+	'icon'=>'asterisk',
+	'label'=>Yii::t('app', 'Create menu item'),
 	'options'=>[
 		'href'=>Url::to(['menu-item-backend/create']),
 		'class'=>'btn btn-primary',
@@ -41,25 +46,13 @@ $this->title = Yii::t('app', 'Articles');
 	'filterModel'=>$searchModel,
 	'columns'=>[
 		[
-			'class'=>IdColumn::className(),
-			'attribute'=>'id',
-		],
-		[
+			'attribute'=>'tree',
 			'label'=>Yii::t('app', 'Menu'),
 			'filter'=>$menuFilter,
 			'columnWidth'=>20,
 			'value'=>function ($model, $key, $index, $column) {
 				/* @var $model \asinfotrack\yii2\article\models\MenuItem|\creocoder\nestedsets\NestedSetsBehavior */
-				if ($model->isRoot()) return null;
-				return $model->parents()->one()->label;
-			},
-		],
-		[
-			'attribute'=>'type',
-			'filter'=>call_user_func([Module::getInstance()->classMap['menuItemModel'], 'typeFilter']),
-			'columnWidth'=>15,
-			'value'=>function ($model, $key, $index, $column) use($typeFilter) {
-				return $typeFilter[$model->type];
+				return $model->isRoot() ? $model->label : $model->parents()->one()->label;
 			},
 		],
 		[
@@ -94,7 +87,6 @@ $this->title = Yii::t('app', 'Articles');
 					]);
 				},
 			],
-			'visible'=>$showMoveColumn,
 		],
 		[
 			'class'=>AdvancedActionColumn::className(),

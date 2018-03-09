@@ -1,14 +1,15 @@
 <?php
 namespace asinfotrack\yii2\article\models;
 
-use asinfotrack\yii2\article\models\query\MenuItemQuery;
-use asinfotrack\yii2\article\Module;
 use Yii;
 use yii\base\InvalidCallException;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
-use creocoder\nestedsets\NestedSetsBehavior;
 use yii\helpers\ArrayHelper;
+use creocoder\nestedsets\NestedSetsBehavior;
+use asinfotrack\yii2\article\Module;
+use asinfotrack\yii2\article\models\query\MenuItemQuery;
+use yii\helpers\Html;
 
 /**
  * This is the model class for table "article_category"
@@ -24,10 +25,15 @@ use yii\helpers\ArrayHelper;
  * @property integer $depth
  * @property integer $type
  * @property string $label
+ * @property string $icon
  * @property bool $is_new_tab
  * @property integer $article_id
  * @property string $route
  * @property string $params
+ * @property string $active_regex
+ * @property string $visible_item_names
+ * @property string $visible_callback_class
+ * @property string $visible_callback_method
  * @property integer $created
  * @property integer $created_by
  * @property integer $updated
@@ -45,12 +51,11 @@ class MenuItem extends \yii\db\ActiveRecord
 
 	public const SCENARIO_MENU = 'menu';
 
-	public const TYPE_MENU = 1;
-	public const TYPE_ARTICLE = 2;
-	public const TYPE_ROUTE = 3;
-	public const TYPE_URL = 4;
+	public const TYPE_ARTICLE = 1;
+	public const TYPE_ROUTE = 2;
+	public const TYPE_URL = 3;
 
-	public static $ALL_TYPES = [self::TYPE_MENU, self::TYPE_ARTICLE, self::TYPE_ROUTE, self::TYPE_URL];
+	public static $ALL_TYPES = [self::TYPE_ARTICLE, self::TYPE_ROUTE, self::TYPE_URL];
 
 	/**
 	 * @var integer the parent menu item id during form handling
@@ -97,23 +102,24 @@ class MenuItem extends \yii\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['label'], 'trim'],
-			[['label'], 'default'],
-			[['type'], 'default', 'value'=>self::TYPE_MENU, 'on'=>self::SCENARIO_MENU],
+			[['icon','label','active_regex','visible_item_names','visible_callback_class','visible_callback_method'], 'trim'],
+			[['icon','label','active_regex','visible_item_names','visible_callback_class','visible_callback_method'], 'default'],
 
-			[['type','label'], 'required'],
-			[['parentId'], 'required', 'on'=>self::SCENARIO_DEFAULT],
-			[['route'], 'required', 'when'=>function ($model) { return $model->type === self::TYPE_ROUTE; }],
-			[['article_id'], 'required', 'when'=>function ($model) { return $model->type === self::TYPE_ARTICLE; }],
+			[['label'], 'required'],
+			[['parentId','type'], 'required', 'on'=>self::SCENARIO_DEFAULT],
+			[['route'], 'required', 'when'=>function ($model) { return intval($model->type) === self::TYPE_ROUTE; }],
+			[['article_id'], 'required', 'when'=>function ($model) { return intval($model->type) === self::TYPE_ARTICLE; }],
 
 			[['type'], 'in', 'range'=>static::$ALL_TYPES],
-			[['label'], 'string', 'max'=>255],
+			[['icon','label','params','visible_item_names','visible_callback_class','visible_callback_method'], 'string', 'max'=>255],
 			[['is_new_tab'], 'boolean'],
 			[['article_id'], 'integer'],
+			[['active_regex'], 'string'],
 
 			[['route'], 'url', 'when'=>function ($model) { return $model->type === self::TYPE_URL; }],
 			[['route'], 'match', 'pattern'=>'/^\/?([\w-]+\/?){1,}(\?.*)?$/', 'when'=>function ($model) { return $model->type = self::TYPE_ROUTE; }],
 			[['article_id'], 'exist', 'targetClass'=>Article::className(), 'targetAttribute'=>'id'],
+			[['visible_item_names'], 'match', 'pattern'=>'/^[\w -_]+(,[\w -_]+)*$/'],
 
 			[['parentId'], 'exist', 'targetClass'=>MenuItem::className(), 'targetAttribute'=>'id'],
 			[['parentId'], function ($attribute, $params, $validator) {
@@ -126,7 +132,9 @@ class MenuItem extends \yii\db\ActiveRecord
 					$msg = Yii::t('app', 'A category can not be assigned to itself.');
 					$this->addError($attribute, $msg);
 				}
-				if (call_user_func([Module::getInstance()->classMap['articleModel'], 'findOne'], $parentId)->isChildOf($this)) {
+
+				$parentModel = call_user_func([Module::getInstance()->classMap['menuItemModel'], 'findOne'], $parentId);
+				if ($parentModel->isChildOf($this)) {
 					$msg = Yii::t('app', 'You can not assign a category to one if its child-categories');
 					$this->addError($attribute, $msg);
 				}
@@ -142,17 +150,36 @@ class MenuItem extends \yii\db\ActiveRecord
 		return [
 			'id'=>Yii::t('app', 'ID'),
 			'type'=>Yii::t('app', 'Typ'),
+			'icon'=>Yii::t('app', 'Icon'),
 			'label'=>Yii::t('app', 'Label'),
 			'is_new_tab'=>Yii::t('app', 'New tab'),
 			'article_id'=>Yii::t('app', 'Article'),
 			'route'=>Yii::t('app', 'Route'),
 			'params'=>Yii::t('app', 'Route-Params'),
+			'active_regex'=>Yii::t('app', 'Activation regexes'),
+			'visible_item_names'=>Yii::t('app', 'Visible to roles'),
+			'visible_callback_class'=>Yii::t('app', 'Callback class'),
+			'visible_callback_method'=>Yii::t('app', 'Callback method'),
 			'created'=>Yii::t('app', 'Created at'),
 			'created_by'=>Yii::t('app', 'Created by'),
 			'updated'=>Yii::t('app', 'Updated at'),
 			'updated_by'=>Yii::t('app', 'Updated by'),
 
 			'parentId'=>Yii::t('app', 'Parent menu item'),
+			'treeLabel'=>Yii::t('app', 'Label'),
+		];
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function attributeHints()
+	{
+		return [
+			'icon'=>Yii::t('app', 'Optional icon for the menu entry. You can choose any icon visible under this URL: {url}', [
+				'url'=>Html::a('FontAwesome', 'https://fontawesome.com/v4.7.0/icons/', ['target'=>'_blank']),
+			]),
+			'active_regex'=>Yii::t('app', 'Regex(es) which will be matched against the current URL. Define one per line'),
 		];
 	}
 
@@ -202,7 +229,10 @@ class MenuItem extends \yii\db\ActiveRecord
 	 */
 	public function beforeValidate()
 	{
-		if ($this->scenario === self::SCENARIO_MENU) $this->parentId = null;
+		if ($this->scenario === self::SCENARIO_MENU) {
+			$this->parentId = null;
+			$this->type = null;
+		}
 		return parent::beforeValidate();
 	}
 
@@ -261,10 +291,8 @@ class MenuItem extends \yii\db\ActiveRecord
 	public function getTreeLabel()
 	{
 		$ret = $this->label;
-		if ($this->depth > 1) {
-			$prefix = Module::getInstance()->params['treeLevelPrefix'];
-			$ret = sprintf('%s %s', str_repeat($prefix, $this->depth - 1), $ret);
-		}
+		$prefix = Module::getInstance()->params['treeLevelPrefix'];
+		$ret = sprintf('%s %s', str_repeat($prefix, $this->depth), $ret);
 		return $ret;
 	}
 
@@ -320,7 +348,6 @@ class MenuItem extends \yii\db\ActiveRecord
 	public static function typeFilter()
 	{
 		return [
-			self::TYPE_MENU=>Yii::t('app', 'Menu'),
 			self::TYPE_ARTICLE=>Yii::t('app', 'Article'),
 			self::TYPE_ROUTE=>Yii::t('app', 'Internal route'),
 			self::TYPE_URL=>Yii::t('app', 'Fixed url'),

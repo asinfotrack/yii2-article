@@ -22,7 +22,7 @@ class MenuItemSearch extends \asinfotrack\yii2\article\models\MenuItem
 	{
 		return [
 			[['id','tree','lft','rgt','depth','type','is_new_tab','article_id','created','created_by','updated','updated_by'], 'integer'],
-			[['label','route','params'], 'safe'],
+			[['icon','label','route','params','visible_item_names','visible_callback_class','visible_callback_method'], 'safe'],
 		];
 	}
 
@@ -78,9 +78,14 @@ class MenuItemSearch extends \asinfotrack\yii2\article\models\MenuItem
 			]);
 
 			$query
+				->andFilterWhere(['like', 'menu_item.icon', $this->icon])
 				->andFilterWhere(['like', 'menu_item.label', $this->label])
 				->andFilterWhere(['like', 'menu_item.route', $this->route])
-				->andFilterWhere(['like', 'menu_item.params', $this->params]);
+				->andFilterWhere(['like', 'menu_item.params', $this->params])
+				->andFilterWhere(['like', 'menu_item.active_regex', $this->active_regex])
+				->andFilterWhere(['like', 'menu_item.visible_item_names', $this->visible_item_names])
+				->andFilterWhere(['like', 'menu_item.visible_callback_class', $this->visible_callback_class])
+				->andFilterWhere(['like', 'menu_item.visible_callback_method', $this->visible_callback_method]);
 		}
 
 		return $dataProvider;

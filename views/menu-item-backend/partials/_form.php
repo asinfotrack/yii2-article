@@ -1,7 +1,7 @@
 <?php
 
 use asinfotrack\yii2\article\models\Article;
-use yii\bootstrap\ActiveForm;
+use asinfotrack\yii2\article\models\MenuItem;use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use asinfotrack\yii2\article\Module;
@@ -26,23 +26,36 @@ $articleData = ArrayHelper::map(Article::find()->type([Article::TYPE_ARTICLE, Ar
 <?= $form->errorSummary($model); ?>
 
 <fieldset>
-	<legend><?= Yii::t('app', 'Menu item') ?></legend>
+	<legend><?= Yii::t('app', 'Entry') ?></legend>
 	<?= $form->field($model, 'label')->textInput(['maxlength'=>true]) ?>
-	<?= $form->field($model, 'type')->dropDownList($typeData, ['prompt'=>Yii::t('app', 'Choose a type')]) ?>
-	<?= $form->field($model, 'parentId')->dropDownList($itemData, ['prompt'=>Yii::t('app', 'Choose a parent item')]) ?>
+	<?php if ($model->scenario !== MenuItem::SCENARIO_MENU): ?>
+		<?= $form->field($model, 'icon')->textInput(['maxlength'=>true]) ?>
+		<?= $form->field($model, 'type')->dropDownList($typeData, ['prompt'=>Yii::t('app', 'Choose a type')]) ?>
+		<?= $form->field($model, 'parentId')->dropDownList($itemData, ['size'=>10]) ?>
+	<?php endif; ?>
 </fieldset>
 
-<fieldset>
-	<legend><?= Yii::t('app', 'Settings') ?></legend>
-	<?= $form->field($model, 'is_new_tab')->checkbox() ?>
-</fieldset>
+<?php if ($model->scenario !== MenuItem::SCENARIO_MENU): ?>
+	<fieldset>
+		<legend><?= Yii::t('app', 'Target') ?></legend>
+		<?= $form->field($model, 'article_id')->dropDownList($articleData, ['prompt'=>Yii::t('app', 'Choose an article')]) ?>
+		<?= $form->field($model, 'route')->textInput(['maxlength'=>true]) ?>
+		<?= $form->field($model, 'params')->textInput(['maxlength'=>true]) ?>
+	</fieldset>
 
-<fieldset>
-	<legend><?= Yii::t('app', 'Target') ?></legend>
-	<?= $form->field($model, 'article_id')->dropDownList($articleData, ['prompt'=>Yii::t('app', 'Choose an article')]) ?>
-	<?= $form->field($model, 'route')->textInput(['maxlength'=>true]) ?>
-	<?= $form->field($model, 'params')->textInput(['maxlength'=>true]) ?>
-</fieldset>
+	<fieldset>
+		<legend><?= Yii::t('app', 'Settings') ?></legend>
+		<?= $form->field($model, 'is_new_tab')->checkbox() ?>
+		<?= $form->field($model, 'active_regex')->textarea() ?>
+	</fieldset>
+
+	<fieldset>
+		<legend><?= Yii::t('app', 'Visibility and rights') ?></legend>
+		<?= $form->field($model, 'visible_item_names')->textInput(['maxlength'=>true]) ?>
+		<?= $form->field($model, 'visible_callback_class')->textInput(['maxlength'=>true]) ?>
+		<?= $form->field($model, 'visible_callback_method')->textInput(['maxlength'=>true]) ?>
+	</fieldset>
+<?php endif; ?>
 
 <div class="form-group">
 	<?= Html::submitButton(Yii::t('app', 'Save'), ['class'=>'btn btn-primary']) ?>
