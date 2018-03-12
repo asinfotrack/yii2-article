@@ -53,4 +53,15 @@ class MenuItemQuery extends \yii\db\ActiveQuery
 		return $this;
 	}
 
+	/**
+	 * Named scope for filtering menu items with a certain type
+	 *
+	 * @return \asinfotrack\yii2\article\models\query\MenuItemQuery $this self for chaining
+	 */
+	public function types($types)
+	{
+		$this->andWhere(['menu_item.type'=>$types]);
+		return $this;
+	}
+
 }

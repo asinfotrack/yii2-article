@@ -16,15 +16,17 @@ $this->title = Yii::t('app', 'Articles');
 $typeFilter = call_user_func([Module::getInstance()->classMap['articleModel'], 'typeFilter']);
 ?>
 
-<?= Button::widget([
-	'tagName'=>'a',
-	'icon'=>'asterisk',
-	'label'=>Yii::t('app', 'Create an article'),
-	'options'=>[
-		'href'=>Url::to(['article-backend/create']),
-		'class'=>'btn btn-primary',
-	],
-]) ?>
+<div class="buttons">
+	<?= Button::widget([
+		'tagName'=>'a',
+		'icon'=>'asterisk',
+		'label'=>Yii::t('app', 'Create an article'),
+		'options'=>[
+			'href'=>Url::to(['article-backend/create']),
+			'class'=>'btn btn-primary',
+		],
+	]) ?>
+</div>
 
 <?= GridView::widget([
 	'dataProvider'=>$dataProvider,

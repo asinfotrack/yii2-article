@@ -65,6 +65,7 @@ class MenuItemBackendController extends \yii\web\Controller
 	{
 		/* @var $model \creocoder\nestedsets\NestedSetsBehavior|\asinfotrack\yii2\article\models\MenuItem */
 		$model = Yii::createObject(Module::getInstance()->classMap['menuItemModel']);
+		$model->is_published = 1;
 		$loaded = $model->load(Yii::$app->request->post());
 
 		if ($loaded && $model->validate()) {

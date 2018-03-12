@@ -10,6 +10,7 @@ use creocoder\nestedsets\NestedSetsBehavior;
 use asinfotrack\yii2\article\Module;
 use asinfotrack\yii2\article\models\query\MenuItemQuery;
 use yii\helpers\Html;
+use yii\helpers\Json;
 
 /**
  * This is the model class for table "article_category"
@@ -27,9 +28,12 @@ use yii\helpers\Html;
  * @property string $label
  * @property string $icon
  * @property bool $is_new_tab
+ * @property bool $is_published
+ * @property string $url_rule_pattern
  * @property integer $article_id
  * @property string $route
- * @property string $params
+ * @property string $route_params
+ * @property string $url
  * @property string $active_regex
  * @property string $visible_item_names
  * @property string $visible_callback_class
@@ -54,8 +58,9 @@ class MenuItem extends \yii\db\ActiveRecord
 	public const TYPE_ARTICLE = 1;
 	public const TYPE_ROUTE = 2;
 	public const TYPE_URL = 3;
+	public const TYPE_NO_LINK = 10;
 
-	public static $ALL_TYPES = [self::TYPE_ARTICLE, self::TYPE_ROUTE, self::TYPE_URL];
+	public static $ALL_TYPES = [self::TYPE_ARTICLE, self::TYPE_ROUTE, self::TYPE_URL, self::TYPE_NO_LINK];
 
 	/**
 	 * @var integer the parent menu item id during form handling
@@ -102,23 +107,33 @@ class MenuItem extends \yii\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['icon','label','active_regex','visible_item_names','visible_callback_class','visible_callback_method'], 'trim'],
-			[['icon','label','active_regex','visible_item_names','visible_callback_class','visible_callback_method'], 'default'],
+			[['icon','label','url_rule_pattern','route','route_params','url','active_regex','visible_item_names','visible_callback_class','visible_callback_method'], 'trim'],
+			[['icon','label','url_rule_pattern','route','route_params','url','active_regex','visible_item_names','visible_callback_class','visible_callback_method'], 'default'],
 
 			[['label'], 'required'],
 			[['parentId','type'], 'required', 'on'=>self::SCENARIO_DEFAULT],
 			[['route'], 'required', 'when'=>function ($model) { return intval($model->type) === self::TYPE_ROUTE; }],
-			[['article_id'], 'required', 'when'=>function ($model) { return intval($model->type) === self::TYPE_ARTICLE; }],
+			[['url_rule_pattern','article_id'], 'required', 'when'=>function ($model) { return intval($model->type) === self::TYPE_ARTICLE; }],
+			[['url'], 'required', 'when'=>function ($model) { return intval($model->type) === self::TYPE_URL; }],
 
 			[['type'], 'in', 'range'=>static::$ALL_TYPES],
-			[['icon','label','params','visible_item_names','visible_callback_class','visible_callback_method'], 'string', 'max'=>255],
-			[['is_new_tab'], 'boolean'],
-			[['article_id'], 'integer'],
+			[['icon','label','route_params','visible_item_names','visible_callback_class','visible_callback_method'], 'string', 'max'=>255],
+			[['is_new_tab','is_published'], 'boolean'],
 			[['active_regex'], 'string'],
 
-			[['route'], 'url', 'when'=>function ($model) { return $model->type === self::TYPE_URL; }],
-			[['route'], 'match', 'pattern'=>'/^\/?([\w-]+\/?){1,}(\?.*)?$/', 'when'=>function ($model) { return $model->type = self::TYPE_ROUTE; }],
+			[['article_id'], 'integer'],
 			[['article_id'], 'exist', 'targetClass'=>Article::className(), 'targetAttribute'=>'id'],
+			[['route'], 'match', 'pattern'=>'/^\/?([\w-]+\/?){1,}(\?.*)?$/', 'when'=>function ($model) { return $model->type = self::TYPE_ROUTE; }],
+			[['route_params'], function ($attribute, $params) {
+				if (empty($this->{$attribute})) return;
+				try {
+					Json::decode($this->{$attribute});
+				} catch (\InvalidArgumentException $e) {
+					$this->addError($attribute, Yii::t('app', 'Invalid JSON-data provided for route params'));
+				}
+			}],
+			[['url'], 'url'],
+
 			[['visible_item_names'], 'match', 'pattern'=>'/^[\w -_]+(,[\w -_]+)*$/'],
 
 			[['parentId'], 'exist', 'targetClass'=>MenuItem::className(), 'targetAttribute'=>'id'],
@@ -153,9 +168,12 @@ class MenuItem extends \yii\db\ActiveRecord
 			'icon'=>Yii::t('app', 'Icon'),
 			'label'=>Yii::t('app', 'Label'),
 			'is_new_tab'=>Yii::t('app', 'New tab'),
+			'is_published'=>Yii::t('app', 'Published'),
+			'url_rule_pattern'=>Yii::t('app', 'URL-rule-pattern'),
 			'article_id'=>Yii::t('app', 'Article'),
 			'route'=>Yii::t('app', 'Route'),
-			'params'=>Yii::t('app', 'Route-Params'),
+			'route_params'=>Yii::t('app', 'Route-Params'),
+			'url'=>Yii::t('app', 'URL'),
 			'active_regex'=>Yii::t('app', 'Activation regexes'),
 			'visible_item_names'=>Yii::t('app', 'Visible to roles'),
 			'visible_callback_class'=>Yii::t('app', 'Callback class'),
@@ -351,6 +369,7 @@ class MenuItem extends \yii\db\ActiveRecord
 			self::TYPE_ARTICLE=>Yii::t('app', 'Article'),
 			self::TYPE_ROUTE=>Yii::t('app', 'Internal route'),
 			self::TYPE_URL=>Yii::t('app', 'Fixed url'),
+			self::TYPE_NO_LINK=>Yii::t('app', 'No link / Label'),
 		];
 	}
 

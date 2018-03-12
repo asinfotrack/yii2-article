@@ -16,24 +16,26 @@ $typeFilter = call_user_func([Module::getInstance()->classMap['menuItemModel'], 
 $this->title = Yii::t('app', $model->scenario !== MenuItem::SCENARIO_MENU ? 'Menu item details' : 'Menu details');
 ?>
 
-<?= Button::widget([
-	'tagName'=>'a',
-	'icon'=>'list',
-	'label'=>Yii::t('app', 'All menu items'),
-	'options'=>[
-		'href'=>Url::to(['menu-item-backend/index']),
-		'class'=>'btn btn-primary',
-	],
-]) ?>
-<?= Button::widget([
-	'tagName'=>'a',
-	'icon'=>'pencil',
-	'label'=>Yii::t('app', $model->scenario !== MenuItem::SCENARIO_MENU ? 'Update menu-item' : 'Update menu'),
-	'options'=>[
-		'href'=>Url::to(['menu-item-backend/update', 'id'=>$model->id]),
-		'class'=>'btn btn-primary',
-	],
-]) ?>
+<div class="buttons">
+	<?= Button::widget([
+		'tagName'=>'a',
+		'icon'=>'list',
+		'label'=>Yii::t('app', 'All menu items'),
+		'options'=>[
+			'href'=>Url::to(['menu-item-backend/index']),
+			'class'=>'btn btn-primary',
+		],
+	]) ?>
+	<?= Button::widget([
+		'tagName'=>'a',
+		'icon'=>'pencil',
+		'label'=>Yii::t('app', $model->scenario !== MenuItem::SCENARIO_MENU ? 'Update menu-item' : 'Update menu'),
+		'options'=>[
+			'href'=>Url::to(['menu-item-backend/update', 'id'=>$model->id]),
+			'class'=>'btn btn-primary',
+		],
+	]) ?>
+</div>
 
 <?= DetailView::widget([
 	'model'=>$model,
@@ -48,9 +50,19 @@ $this->title = Yii::t('app', $model->scenario !== MenuItem::SCENARIO_MENU ? 'Men
 			'visible'=>!$model->isRoot(),
 		],
 		[
+			'attribute'=>'is_published',
+			'format'=>'boolean',
+			'visible'=>!$model->isRoot(),
+		],
+		[
 			'attribute'=>'type',
 			'value'=>$model->isRoot() ? null : $typeFilter[$model->type],
 			'visible'=>!$model->isRoot(),
+		],
+		[
+			'attribute'=>'url_rule_pattern',
+			'format'=>'html',
+			'value'=>$model->url_rule_pattern === null ? null : Html::tag('code', $model->url_rule_pattern),
 		],
 		[
 			'attribute'=>'article_id',
@@ -60,14 +72,18 @@ $this->title = Yii::t('app', $model->scenario !== MenuItem::SCENARIO_MENU ? 'Men
 		],
 		[
 			'attribute'=>'route',
-			'format'=>$model->type === MenuItem::TYPE_URL ? 'url' : null,
-			'visible'=>$model->type === MenuItem::TYPE_URL || $model->type === MenuItem::TYPE_ROUTE,
+			'visible'=>$model->type === MenuItem::TYPE_ROUTE,
 		],
 		[
-			'attribute'=>'params',
+			'attribute'=>'route_params',
 			'format'=>'raw',
 			'visible'=>$model->type === MenuItem::TYPE_ROUTE,
-			'value'=>empty($model->params) ? null : VarDumper::dumpAsString(Json::decode($model->params), 10, true),
+			'value'=>empty($model->route_params) ? null : VarDumper::dumpAsString(Json::decode($model->route_params), 10, true),
 		],
+		[
+			'attribute'=>'url',
+			'format'=>'url',
+			'visible'=>$model->type === MenuItem::TYPE_URL,
+		]
 	],
 ]) ?>

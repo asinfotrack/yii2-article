@@ -53,15 +53,15 @@ class ArticleAction extends \yii\web\ViewAction
 	 */
 	public function init()
 	{
-		//assert proper article setting
-		if ($this->article === null) {
-			throw new InvalidConfigException($msg = Yii::t('app', 'Article must be set'));
+		//try to find article if not set already
+		if ($this->article === null && Yii::$app->request->getQueryParam('id') !== null) {
+			$this->article = static::findArticleByIdOrCanonical(Yii::$app->request->getQueryParam('id'));
+		} else if (!($this->article instanceof Article)) {
+			$this->article = static::findArticleByIdOrCanonical($this->article);
 		}
-		if (!($this->article instanceof Article)) {
-			$article = call_user_func([Module::getInstance()->classMap['articleModel'], 'findOne'], $this->article);
-			if ($article === null) $this->throwNotFound($this->article);
-			$this->article = $article;
-		}
+
+		//check if not found
+		if ($this->article === null) $this->throwNotFound();
 
 		//check if article is within publication range
 		$now = time();
@@ -119,6 +119,17 @@ class ArticleAction extends \yii\web\ViewAction
 	{
 		$msg = Yii::t('app', 'This article is no longer available');
 		throw new ExpiredHttpException($msg);
+	}
+
+	/**
+	 * Tries to find an article by its id or canonical
+	 *
+	 * @param string|int $idOrCanonical either an articles id or canonical
+	 * @return \asinfotrack\yii2\article\models\Article|null either the article model or null if not found
+	 */
+	protected static function findArticleByIdOrCanonical($idOrCanonical)
+	{
+		return call_user_func([Module::getInstance()->classMap['articleModel'], 'findOne'], $idOrCanonical);
 	}
 
 }

@@ -1,4 +1,6 @@
 <?php
+
+use asinfotrack\yii2\toolbox\widgets\grid\BooleanColumn;
 use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -7,7 +9,6 @@ use rmrevin\yii\fontawesome\FA;
 use asinfotrack\yii2\toolbox\widgets\Button;
 use asinfotrack\yii2\toolbox\widgets\grid\AdvancedActionColumn;
 use asinfotrack\yii2\toolbox\widgets\grid\AdvancedDataColumn;
-use asinfotrack\yii2\toolbox\widgets\grid\IdColumn;
 use asinfotrack\yii2\article\Module;
 
 /* @var $this \yii\web\View */
@@ -22,24 +23,26 @@ $typeFilter = call_user_func([Module::getInstance()->classMap['menuItemModel'], 
 $this->title = Yii::t('app', 'Menu items');
 ?>
 
-<?= Button::widget([
-	'tagName'=>'a',
-	'icon'=>'asterisk',
-	'label'=>Yii::t('app', 'Create menu'),
-	'options'=>[
-		'href'=>Url::to(['menu-item-backend/create-menu']),
-		'class'=>'btn btn-primary',
-	],
-]) ?>
-<?= Button::widget([
-	'tagName'=>'a',
-	'icon'=>'asterisk',
-	'label'=>Yii::t('app', 'Create menu item'),
-	'options'=>[
-		'href'=>Url::to(['menu-item-backend/create']),
-		'class'=>'btn btn-primary',
-	],
-]) ?>
+<div class="buttons">
+	<?= Button::widget([
+		'tagName'=>'a',
+		'icon'=>'asterisk',
+		'label'=>Yii::t('app', 'Create menu'),
+		'options'=>[
+			'href'=>Url::to(['menu-item-backend/create-menu']),
+			'class'=>'btn btn-primary',
+		],
+	]) ?>
+	<?= Button::widget([
+		'tagName'=>'a',
+		'icon'=>'asterisk',
+		'label'=>Yii::t('app', 'Create menu item'),
+		'options'=>[
+			'href'=>Url::to(['menu-item-backend/create']),
+			'class'=>'btn btn-primary',
+		],
+	]) ?>
+</div>
 
 <?= GridView::widget([
 	'dataProvider'=>$dataProvider,
@@ -49,7 +52,8 @@ $this->title = Yii::t('app', 'Menu items');
 			'attribute'=>'tree',
 			'label'=>Yii::t('app', 'Menu'),
 			'filter'=>$menuFilter,
-			'columnWidth'=>20,
+			'columnWidth'=>15,
+			'enableSorting'=>false,
 			'value'=>function ($model, $key, $index, $column) {
 				/* @var $model \asinfotrack\yii2\article\models\MenuItem|\creocoder\nestedsets\NestedSetsBehavior */
 				return $model->isRoot() ? $model->label : $model->parents()->one()->label;
@@ -57,7 +61,26 @@ $this->title = Yii::t('app', 'Menu items');
 		],
 		[
 			'class'=>AdvancedDataColumn::className(),
-			'attribute'=>'treeLabel',
+			'attribute'=>'type',
+			'filter'=>$typeFilter,
+			'columnWidth'=>10,
+			'enableSorting'=>false,
+			'value'=>function ($model, $key, $index, $column) use ($typeFilter) {
+				return $model->type === null ? null : $typeFilter[$model->type];
+			},
+		],
+		[
+			'class'=>AdvancedDataColumn::className(),
+			'attribute'=>'label',
+			'enableSorting'=>false,
+			'value'=>function ($model, $key, $index, $column) use ($typeFilter) {
+				return $model->treeLabel;
+			},
+		],
+		[
+			'class'=>BooleanColumn::className(),
+			'attribute'=>'is_published',
+			'enableSorting'=>false,
 		],
 
 		[

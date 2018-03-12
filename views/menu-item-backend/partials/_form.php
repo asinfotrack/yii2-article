@@ -37,15 +37,21 @@ $articleData = ArrayHelper::map(Article::find()->type([Article::TYPE_ARTICLE, Ar
 
 <?php if ($model->scenario !== MenuItem::SCENARIO_MENU): ?>
 	<fieldset>
+		<legend><?= Yii::t('app', 'Published URL-rule') ?></legend>
+		<?= $form->field($model, 'url_rule_pattern')->textInput(['maxlength'=>true]) ?>
+	</fieldset>
+	<fieldset>
 		<legend><?= Yii::t('app', 'Target') ?></legend>
 		<?= $form->field($model, 'article_id')->dropDownList($articleData, ['prompt'=>Yii::t('app', 'Choose an article')]) ?>
 		<?= $form->field($model, 'route')->textInput(['maxlength'=>true]) ?>
-		<?= $form->field($model, 'params')->textInput(['maxlength'=>true]) ?>
+		<?= $form->field($model, 'route_params')->textInput(['maxlength'=>true]) ?>
+		<?= $form->field($model, 'url')->textInput(['maxlength'=>true]) ?>
 	</fieldset>
 
 	<fieldset>
 		<legend><?= Yii::t('app', 'Settings') ?></legend>
 		<?= $form->field($model, 'is_new_tab')->checkbox() ?>
+		<?= $form->field($model, 'is_published')->checkbox() ?>
 		<?= $form->field($model, 'active_regex')->textarea() ?>
 	</fieldset>
 

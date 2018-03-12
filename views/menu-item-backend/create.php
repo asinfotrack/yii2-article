@@ -9,14 +9,16 @@ use asinfotrack\yii2\toolbox\widgets\Button;
 $this->title = Yii::t('app', $model->scenario !== MenuItem::SCENARIO_MENU ? 'Create menu item' : 'Create menu');
 ?>
 
-<?= Button::widget([
-	'tagName'=>'a',
-	'icon'=>'list',
-	'label'=>Yii::t('app', 'All menu items'),
-	'options'=>[
-		'href'=>Url::to(['menu-item-backend/index']),
-		'class'=>'btn btn-primary',
-	],
-]) ?>
+<div class="buttons">
+	<?= Button::widget([
+		'tagName'=>'a',
+		'icon'=>'list',
+		'label'=>Yii::t('app', 'All menu items'),
+		'options'=>[
+			'href'=>Url::to(['menu-item-backend/index']),
+			'class'=>'btn btn-primary',
+		],
+	]) ?>
+</div>
 
 <?= $this->render('partials/_form', ['model'=>$model]) ?>

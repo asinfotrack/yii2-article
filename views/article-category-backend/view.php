@@ -35,24 +35,26 @@ if (count($model->articles) > 0) {
 }
 ?>
 
-<?= Button::widget([
-	'tagName'=>'a',
-	'icon'=>'list',
-	'label'=>Yii::t('app', 'All article categories'),
-	'options'=>[
-		'href'=>Url::to(['article-category-backend/index']),
-		'class'=>'btn btn-primary',
-	],
-]) ?>
-<?= Button::widget([
-	'tagName'=>'a',
-	'icon'=>'pencil',
-	'label'=>Yii::t('app', 'Update article category'),
-	'options'=>[
-		'href'=>Url::to(['article-category-backend/update', 'id'=>$model->id]),
-		'class'=>'btn btn-primary',
-	],
-]) ?>
+<div class="buttons">
+	<?= Button::widget([
+		'tagName'=>'a',
+		'icon'=>'list',
+		'label'=>Yii::t('app', 'All article categories'),
+		'options'=>[
+			'href'=>Url::to(['article-category-backend/index']),
+			'class'=>'btn btn-primary',
+		],
+	]) ?>
+	<?= Button::widget([
+		'tagName'=>'a',
+		'icon'=>'pencil',
+		'label'=>Yii::t('app', 'Update article category'),
+		'options'=>[
+			'href'=>Url::to(['article-category-backend/update', 'id'=>$model->id]),
+			'class'=>'btn btn-primary',
+		],
+	]) ?>
+</div>
 
 <?= DetailView::widget([
 	'model'=>$model,

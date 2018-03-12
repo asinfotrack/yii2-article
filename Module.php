@@ -1,9 +1,11 @@
 <?php
 namespace asinfotrack\yii2\article;
 
+use Yii;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Inflector;
+use yii\helpers\Url;
 use yii\jui\DatePicker;
+use asinfotrack\yii2\article\models\MenuItem;
 
 /**
  * Main class for the article module
@@ -16,6 +18,12 @@ use yii\jui\DatePicker;
  */
 class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 {
+
+	/**
+	 * @var array the default route for article rendering when a menu item has an article id
+	 * as its target.
+	 */
+	public $defaultArticleRoute = '/article/article/render';
 
 	/**
 	 * @var array array containing the classes to use for the individual model components.
@@ -269,7 +277,30 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 	 */
 	public function bootstrap($app)
 	{
-		//no action needed during bootstrapping
+		//register menu item rules referring to an article, if this is a web application
+		if (Yii::$app instanceof \yii\web\Application) {
+			$this->registerUrlRules();
+		}
+	}
+
+	/**
+	 * Registers the url rules as needed by the article menu entries
+	 */
+	protected function registerUrlRules()
+	{
+		/* @var $query \asinfotrack\yii2\article\models\query\MenuItemQuery|\creocoder\nestedsets\NestedSetsQueryBehavior */
+		$query = call_user_func([$this->classMap['menuItemModel'], 'find']);
+		$data = $query->types(MenuItem::TYPE_ARTICLE)->select(['url_rule_pattern','article_id'])->asArray(true)->all();
+
+		$rules = [];
+		foreach ($data as $entry) {
+			$rules[] = [
+				'pattern'=>$entry['url_rule_pattern'],
+				'route'=>'article/article/render',
+			];
+		}
+
+		Yii::$app->urlManager->addRules($rules, false);
 	}
 
 	/**

@@ -8,14 +8,16 @@ use yii\helpers\Url;
 $this->title = Yii::t('app', 'Create article category');
 ?>
 
-<?= Button::widget([
-	'tagName'=>'a',
-	'icon'=>'list',
-	'label'=>Yii::t('app', 'All article categories'),
-	'options'=>[
-		'href'=>Url::to(['article-category-backend/index']),
-		'class'=>'btn btn-primary',
-	],
-]) ?>
+<div class="buttons">
+	<?= Button::widget([
+		'tagName'=>'a',
+		'icon'=>'list',
+		'label'=>Yii::t('app', 'All article categories'),
+		'options'=>[
+			'href'=>Url::to(['article-category-backend/index']),
+			'class'=>'btn btn-primary',
+		],
+	]) ?>
+</div>
 
 <?= $this->render('partials/_form', ['model'=>$model]) ?>

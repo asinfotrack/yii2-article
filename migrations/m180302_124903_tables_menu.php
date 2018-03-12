@@ -21,12 +21,16 @@ class m180302_124903_tables_menu extends \asinfotrack\yii2\toolbox\console\Migra
 			'icon'=>$this->string(),
 			'label'=>$this->string()->notNull(),
 			'is_new_tab'=>$this->boolean()->notNull()->defaultValue(0),
+			'is_published'=>$this->boolean()->notNull()->defaultValue(1),
+
+			'url_rule_pattern'=>$this->string(),
 
 			'article_id'=>$this->integer(),
 			'route'=>$this->string(),
-			'params'=>$this->string(),
+			'route_params'=>$this->string(1024),
+			'url'=>$this->string(),
 
-			'active_regex'=>$this->string(2048),
+			'active_regex'=>$this->string(1024),
 			'visible_item_names'=>$this->string(),
 			'visible_callback_class'=>$this->string(),
 			'visible_callback_method'=>$this->string(),

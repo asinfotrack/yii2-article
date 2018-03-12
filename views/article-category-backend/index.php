@@ -17,15 +17,17 @@ use asinfotrack\yii2\article\Module;
 $this->title = Yii::t('app', 'Articles');
 ?>
 
-<?= Button::widget([
-	'tagName'=>'a',
-	'icon'=>'asterisk',
-	'label'=>Yii::t('app', 'Create an article category'),
-	'options'=>[
-		'href'=>Url::to(['article-category-backend/create']),
-		'class'=>'btn btn-primary',
-	],
-]) ?>
+<div class="buttons">
+	<?= Button::widget([
+		'tagName'=>'a',
+		'icon'=>'asterisk',
+		'label'=>Yii::t('app', 'Create an article category'),
+		'options'=>[
+			'href'=>Url::to(['article-category-backend/create']),
+			'class'=>'btn btn-primary',
+		],
+	]) ?>
+</div>
 
 <?= GridView::widget([
 	'dataProvider'=>$dataProvider,
