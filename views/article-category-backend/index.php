@@ -14,7 +14,7 @@ use asinfotrack\yii2\article\Module;
 /* @var $dataProvider \yii\data\ActiveDataProvider */
 /* @var $searchModel \asinfotrack\yii2\article\models\search\ArticleSearch */
 
-$this->title = Yii::t('app', 'Articles');
+$this->title = Yii::t('app', 'Article categories');
 ?>
 
 <div class="buttons">
