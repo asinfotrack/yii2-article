@@ -60,9 +60,9 @@ $this->title = Yii::t('app', $model->scenario !== MenuItem::SCENARIO_MENU ? 'Men
 			'visible'=>!$model->isRoot(),
 		],
 		[
-			'attribute'=>'url_rule_pattern',
+			'attribute'=>'path_info',
 			'format'=>'html',
-			'value'=>$model->url_rule_pattern === null ? null : Html::tag('code', $model->url_rule_pattern),
+			'value'=>$model->path_info === null ? null : Html::tag('code', $model->path_info),
 		],
 		[
 			'attribute'=>'article_id',

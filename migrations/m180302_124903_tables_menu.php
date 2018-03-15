@@ -23,21 +23,25 @@ class m180302_124903_tables_menu extends \asinfotrack\yii2\toolbox\console\Migra
 			'is_new_tab'=>$this->boolean()->notNull()->defaultValue(0),
 			'is_published'=>$this->boolean()->notNull()->defaultValue(1),
 
-			'url_rule_pattern'=>$this->string(),
+			'path_info'=>$this->string(),
 
 			'article_id'=>$this->integer(),
 			'route'=>$this->string(),
-			'route_params'=>$this->string(1024),
+			'route_params'=>$this->text(),
 			'url'=>$this->string(),
 
-			'active_regex'=>$this->string(1024),
 			'visible_item_names'=>$this->string(),
 			'visible_callback_class'=>$this->string(),
 			'visible_callback_method'=>$this->string(),
 		]);
 		$this->addForeignKey('FK_menu_item_article', '{{%menu_item}}', ['article_id'], '{{%article}}', ['id'], 'SET NULL', 'CASCADE');
+
+		$this->createIndex('IN_menu_item_tree', '{{%menu_item}}', ['tree']);
 		$this->createIndex('IN_menu_item_lft', '{{%menu_item}}', ['lft']);
 		$this->createIndex('IN_menu_item_rgt', '{{%menu_item}}', ['rgt']);
+		$this->createIndex('IN_menu_item_type', '{{%menu_item}}', ['type']);
+		$this->createIndex('IN_menu_item_is_published', '{{%menu_item}}', ['is_published']);
+		$this->createIndex('IN_menu_item_path_info', '{{%menu_item}}', ['path_info']);
 
 		return true;
 	}

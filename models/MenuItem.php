@@ -2,6 +2,7 @@
 namespace asinfotrack\yii2\article\models;
 
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidCallException;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -11,6 +12,7 @@ use asinfotrack\yii2\article\Module;
 use asinfotrack\yii2\article\models\query\MenuItemQuery;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\validators\UniqueValidator;
 
 /**
  * This is the model class for table "article_category"
@@ -29,12 +31,11 @@ use yii\helpers\Json;
  * @property string $icon
  * @property bool $is_new_tab
  * @property bool $is_published
- * @property string $url_rule_pattern
+ * @property string $path_info
  * @property integer $article_id
  * @property string $route
  * @property string $route_params
  * @property string $url
- * @property string $active_regex
  * @property string $visible_item_names
  * @property string $visible_callback_class
  * @property string $visible_callback_method
@@ -107,23 +108,57 @@ class MenuItem extends \yii\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['icon','label','url_rule_pattern','route','route_params','url','active_regex','visible_item_names','visible_callback_class','visible_callback_method'], 'trim'],
-			[['icon','label','url_rule_pattern','route','route_params','url','active_regex','visible_item_names','visible_callback_class','visible_callback_method'], 'default'],
+			[['icon','label','path_info','route','route_params','url','visible_item_names','visible_callback_class','visible_callback_method'], 'trim'],
+			[['icon','label','path_info','route','route_params','url','visible_item_names','visible_callback_class','visible_callback_method'], 'default'],
+			[['path_info'], 'filter', 'filter'=>function($value) { return trim($value, '/'); }],
 
 			[['label'], 'required'],
 			[['parentId','type'], 'required', 'on'=>self::SCENARIO_DEFAULT],
-			[['route'], 'required', 'when'=>function ($model) { return intval($model->type) === self::TYPE_ROUTE; }],
-			[['url_rule_pattern','article_id'], 'required', 'when'=>function ($model) { return intval($model->type) === self::TYPE_ARTICLE; }],
-			[['url'], 'required', 'when'=>function ($model) { return intval($model->type) === self::TYPE_URL; }],
 
+			[['icon','label','visible_item_names','visible_callback_class','visible_callback_method'], 'string', 'max'=>255],
 			[['type'], 'in', 'range'=>static::$ALL_TYPES],
-			[['icon','label','route_params','visible_item_names','visible_callback_class','visible_callback_method'], 'string', 'max'=>255],
 			[['is_new_tab','is_published'], 'boolean'],
-			[['active_regex'], 'string'],
+			[['visible_item_names'], 'match', 'pattern'=>'/^[\w -_]+(,[\w -_]+)*$/'],
 
+			[['path_info'], 'required', 'when'=>function ($model) {
+				return in_array(intval($model->type), [self::TYPE_ARTICLE, self::TYPE_ROUTE]);
+			}],
+			[['path_info'], function ($attribute, $params) {
+				$tree = MenuItem::findOne($this->parentId)->tree;
+				$query = MenuItem::find()->andWhere(['menu_item.tree'=>$tree])->pathInfo($this->{$attribute});
+				if (!$this->isNewRecord) $query->andWhere(['NOT', ['menu_item.id'=>$this->id]]);
+
+				if ($query->exists()) {
+					$msg = Yii::t('app', 'The path info {pi} is already taken within the menu {tree}', [
+						'pi'=>$this->{$attribute},
+						'tree'=>$tree,
+					]);
+					$this->addError($attribute, $msg);
+				}
+			}, 'when'=>function ($model) {
+				return in_array(intval($model->type), [self::TYPE_ARTICLE, self::TYPE_ROUTE]);
+			}],
+			[['path_info'], function ($attribute, $params) {
+				if (empty($this->{$attribute})) return;
+				$query = MenuItem::find()->pathInfo($this->{$attribute});
+				if (!$this->isNewRecord) $query->andWhere(['NOT', ['menu_item.id'=>$this->id]]);
+				foreach ($query->all() as $model) {
+					/* @var $model \asinfotrack\yii2\article\models\MenuItem */
+					if (!static::haveSameConfig($this, $model)) {
+						$msg = Yii::t('app', 'Same path infos across menus are allowed, but they need to be configured the same way');
+						$this->addError($attribute, $msg);
+					}
+				}
+			}],
+
+			[['article_id'], 'required', 'when'=>function ($model) { return intval($model->type) === self::TYPE_ARTICLE; }],
 			[['article_id'], 'integer'],
 			[['article_id'], 'exist', 'targetClass'=>Article::className(), 'targetAttribute'=>'id'],
+
+			[['route'], 'required', 'when'=>function ($model) { return intval($model->type) === self::TYPE_ROUTE; }],
+			[['route'], 'string', 'max'=>255],
 			[['route'], 'match', 'pattern'=>'/^\/?([\w-]+\/?){1,}(\?.*)?$/', 'when'=>function ($model) { return $model->type = self::TYPE_ROUTE; }],
+			[['route_params'], 'string'],
 			[['route_params'], function ($attribute, $params) {
 				if (empty($this->{$attribute})) return;
 				try {
@@ -132,9 +167,9 @@ class MenuItem extends \yii\db\ActiveRecord
 					$this->addError($attribute, Yii::t('app', 'Invalid JSON-data provided for route params'));
 				}
 			}],
-			[['url'], 'url'],
 
-			[['visible_item_names'], 'match', 'pattern'=>'/^[\w -_]+(,[\w -_]+)*$/'],
+			[['url'], 'required', 'when'=>function ($model) { return intval($model->type) === self::TYPE_URL; }],
+			[['url'], 'url'],
 
 			[['parentId'], 'exist', 'targetClass'=>MenuItem::className(), 'targetAttribute'=>'id'],
 			[['parentId'], function ($attribute, $params, $validator) {
@@ -169,12 +204,11 @@ class MenuItem extends \yii\db\ActiveRecord
 			'label'=>Yii::t('app', 'Label'),
 			'is_new_tab'=>Yii::t('app', 'New tab'),
 			'is_published'=>Yii::t('app', 'Published'),
-			'url_rule_pattern'=>Yii::t('app', 'URL-rule-pattern'),
+			'path_info'=>Yii::t('app', 'Path info'),
 			'article_id'=>Yii::t('app', 'Article'),
 			'route'=>Yii::t('app', 'Route'),
 			'route_params'=>Yii::t('app', 'Route-Params'),
 			'url'=>Yii::t('app', 'URL'),
-			'active_regex'=>Yii::t('app', 'Activation regexes'),
 			'visible_item_names'=>Yii::t('app', 'Visible to roles'),
 			'visible_callback_class'=>Yii::t('app', 'Callback class'),
 			'visible_callback_method'=>Yii::t('app', 'Callback method'),
@@ -197,7 +231,6 @@ class MenuItem extends \yii\db\ActiveRecord
 			'icon'=>Yii::t('app', 'Optional icon for the menu entry. You can choose any icon visible under this URL: {url}', [
 				'url'=>Html::a('FontAwesome', 'https://fontawesome.com/v4.7.0/icons/', ['target'=>'_blank']),
 			]),
-			'active_regex'=>Yii::t('app', 'Regex(es) which will be matched against the current URL. Define one per line'),
 		];
 	}
 
@@ -252,6 +285,27 @@ class MenuItem extends \yii\db\ActiveRecord
 			$this->type = null;
 		}
 		return parent::beforeValidate();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function beforeSave($insert)
+	{
+		if (!parent::beforeSave($insert)) {
+			return false;
+		}
+
+		$type = intval($this->type);
+		if (!in_array($type, [self::TYPE_ARTICLE, self::TYPE_ROUTE])) $this->path_info = null;
+		if ($type !== self::TYPE_ARTICLE) $this->article_id = null;
+		if ($type !== self::TYPE_ROUTE) {
+			$this->route = null;
+			$this->route_params = null;
+		}
+		if ($type !== self::TYPE_URL) $this->url = null;
+
+		return true;
 	}
 
 	/**
@@ -371,6 +425,34 @@ class MenuItem extends \yii\db\ActiveRecord
 			self::TYPE_URL=>Yii::t('app', 'Fixed url'),
 			self::TYPE_NO_LINK=>Yii::t('app', 'No link / Label'),
 		];
+	}
+
+	/**
+	 * Compares the menu item configuration of two items and returns if they are the same
+	 *
+	 * @param \asinfotrack\yii2\article\models\MenuItem $itemA first item
+	 * @param \asinfotrack\yii2\article\models\MenuItem $itemB second item
+	 * @return bool true if the same
+	 */
+	protected static function haveSameConfig(MenuItem $itemA, MenuItem $itemB) : bool
+	{
+		if ($itemA->type !== $itemB->type) {
+			return false;
+		}
+		if ($itemA->article_id !== $itemB->article_id) {
+			return false;
+		}
+		if ($itemA->route !== $itemB->route) {
+			return false;
+		}
+		if ($itemA->route_params !== $itemB->route_params) {
+			return false;
+		}
+		if ($itemA->url !== $itemB->url) {
+			return false;
+		}
+
+		return true;
 	}
 
 }

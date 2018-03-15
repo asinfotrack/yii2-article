@@ -22,7 +22,7 @@ class MenuItemSearch extends \asinfotrack\yii2\article\models\MenuItem
 	{
 		return [
 			[['id','tree','lft','rgt','depth','type','is_new_tab','is_published','article_id','created','created_by','updated','updated_by'], 'integer'],
-			[['icon','label','url_rule_pattern','route','route_params','url','active_regex','visible_item_names','visible_callback_class','visible_callback_method'], 'safe'],
+			[['icon','label','path_info','route','route_params','url','visible_item_names','visible_callback_class','visible_callback_method'], 'safe'],
 		];
 	}
 
@@ -82,11 +82,10 @@ class MenuItemSearch extends \asinfotrack\yii2\article\models\MenuItem
 			$query
 				->andFilterWhere(['like', 'menu_item.icon', $this->icon])
 				->andFilterWhere(['like', 'menu_item.label', $this->label])
-				->andFilterWhere(['like', 'menu_item.url_rule_pattern', $this->url_rule_pattern])
+				->andFilterWhere(['like', 'menu_item.path_info', $this->path_info])
 				->andFilterWhere(['like', 'menu_item.route', $this->route])
 				->andFilterWhere(['like', 'menu_item.route_params', $this->route_params])
 				->andFilterWhere(['like', 'menu_item.url', $this->url])
-				->andFilterWhere(['like', 'menu_item.active_regex', $this->active_regex])
 				->andFilterWhere(['like', 'menu_item.visible_item_names', $this->visible_item_names])
 				->andFilterWhere(['like', 'menu_item.visible_callback_class', $this->visible_callback_class])
 				->andFilterWhere(['like', 'menu_item.visible_callback_method', $this->visible_callback_method]);

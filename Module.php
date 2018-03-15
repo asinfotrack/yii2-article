@@ -1,6 +1,7 @@
 <?php
 namespace asinfotrack\yii2\article;
 
+use asinfotrack\yii2\article\components\MenuItemUrlRule;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
@@ -20,10 +21,15 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 {
 
 	/**
-	 * @var array the default route for article rendering when a menu item has an article id
+	 * @var array the route for article rendering when a menu item has an article id
 	 * as its target.
 	 */
-	public $defaultArticleRoute = '/article/article/render';
+	public $articleMenuItemRoute = 'article/article/render';
+
+	/**
+	 * @var string the name of the action param when rendering articles
+	 */
+	public $articleMenuItemParam = 'id';
 
 	/**
 	 * @var array array containing the classes to use for the individual model components.
@@ -288,19 +294,11 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 	 */
 	protected function registerUrlRules()
 	{
-		/* @var $query \asinfotrack\yii2\article\models\query\MenuItemQuery|\creocoder\nestedsets\NestedSetsQueryBehavior */
-		$query = call_user_func([$this->classMap['menuItemModel'], 'find']);
-		$data = $query->types(MenuItem::TYPE_ARTICLE)->select(['url_rule_pattern','article_id'])->asArray(true)->all();
+		$rule = new MenuItemUrlRule();
+		$rule->targetArticleRoute = $this->articleMenuItemRoute;
+		$rule->targetArticleRouteParam = $this->articleMenuItemParam;
 
-		$rules = [];
-		foreach ($data as $entry) {
-			$rules[] = [
-				'pattern'=>$entry['url_rule_pattern'],
-				'route'=>'article/article/render',
-			];
-		}
-
-		Yii::$app->urlManager->addRules($rules, false);
+		Yii::$app->urlManager->addRules([$rule], false);
 	}
 
 	/**

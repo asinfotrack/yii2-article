@@ -4,7 +4,8 @@ use asinfotrack\yii2\article\models\Article;
 use asinfotrack\yii2\article\models\MenuItem;use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use asinfotrack\yii2\article\Module;
+use asinfotrack\yii2\article\Module;use yii\helpers\Json;
+use yii\web\JsExpression;
 
 /* @var $this \yii\web\View */
 /* @var $model \asinfotrack\yii2\article\models\MenuItem|\creocoder\nestedsets\NestedSetsBehavior */
@@ -21,6 +22,11 @@ $form = ActiveForm::begin([
 
 $typeData = call_user_func([Module::getInstance()->classMap['menuItemModel'], 'typeFilter']);
 $articleData = ArrayHelper::map(Article::find()->type([Article::TYPE_ARTICLE, Article::TYPE_UNDEFINED])->all(), 'id', 'title');
+
+
+$this->registerJs(new JsExpression("
+	
+"));
 ?>
 
 <?= $form->errorSummary($model); ?>
@@ -35,16 +41,23 @@ $articleData = ArrayHelper::map(Article::find()->type([Article::TYPE_ARTICLE, Ar
 	<?php endif; ?>
 </fieldset>
 
+<fieldset data-types="<?= Json::encode([MenuItem::TYPE_ARTICLE, MenuItem::TYPE_ROUTE]) ?>">
+	<legend><?= Yii::t('app', 'URL configuration') ?></legend>
+	<?= $form->field($model, 'path_info')->textInput(['maxlength'=>true]) ?>
+</fieldset>
+
 <?php if ($model->scenario !== MenuItem::SCENARIO_MENU): ?>
-	<fieldset>
-		<legend><?= Yii::t('app', 'Published URL-rule') ?></legend>
-		<?= $form->field($model, 'url_rule_pattern')->textInput(['maxlength'=>true]) ?>
-	</fieldset>
-	<fieldset>
-		<legend><?= Yii::t('app', 'Target') ?></legend>
+	<fieldset data-types="<?= Json::encode([MenuItem::TYPE_ARTICLE]) ?>">
+		<legend><?= Yii::t('app', 'Article target') ?></legend>
 		<?= $form->field($model, 'article_id')->dropDownList($articleData, ['prompt'=>Yii::t('app', 'Choose an article')]) ?>
+	</fieldset>
+	<fieldset data-types="<?= Json::encode([MenuItem::TYPE_ROUTE]) ?>">
+		<legend><?= Yii::t('app', 'Route target') ?></legend>
 		<?= $form->field($model, 'route')->textInput(['maxlength'=>true]) ?>
 		<?= $form->field($model, 'route_params')->textInput(['maxlength'=>true]) ?>
+	</fieldset>
+	<fieldset data-types="<?= Json::encode([MenuItem::TYPE_URL]) ?>">
+		<legend><?= Yii::t('app', 'URL target') ?></legend>
 		<?= $form->field($model, 'url')->textInput(['maxlength'=>true]) ?>
 	</fieldset>
 
@@ -52,7 +65,6 @@ $articleData = ArrayHelper::map(Article::find()->type([Article::TYPE_ARTICLE, Ar
 		<legend><?= Yii::t('app', 'Settings') ?></legend>
 		<?= $form->field($model, 'is_new_tab')->checkbox() ?>
 		<?= $form->field($model, 'is_published')->checkbox() ?>
-		<?= $form->field($model, 'active_regex')->textarea() ?>
 	</fieldset>
 
 	<fieldset>
