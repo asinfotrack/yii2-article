@@ -25,7 +25,37 @@ $articleData = ArrayHelper::map(Article::find()->type([Article::TYPE_ARTICLE, Ar
 
 
 $this->registerJs(new JsExpression("
+	var typeDropdown = $('#menuitem-type');
 	
+	function showRelevantFieldsets() {
+		var typeVal = parseInt(typeDropdown.val());
+		
+		$('fieldset').each(function (el) {
+			var attrVal = $(this).attr('data-types');
+			if (typeof attrVal === typeof undefined || attrVal === false || attrVal.length < 3) return;
+			
+			var attrTypes = JSON.parse(attrVal);
+			var found = false;
+			for (var i=0; i<attrTypes.length; i++) {
+				if (attrTypes[i] === typeVal) {
+					found = true;
+					break;
+				}
+			}
+			
+			if (found) {
+				$(this).show();
+			} else {
+				$(this).hide();
+			}
+		});
+	} 
+	
+	typeDropdown.change(function (event) {
+		showRelevantFieldsets();
+	});
+	
+	showRelevantFieldsets();
 "));
 ?>
 
@@ -36,8 +66,8 @@ $this->registerJs(new JsExpression("
 	<?= $form->field($model, 'label')->textInput(['maxlength'=>true]) ?>
 	<?php if ($model->scenario !== MenuItem::SCENARIO_MENU): ?>
 		<?= $form->field($model, 'icon')->textInput(['maxlength'=>true]) ?>
-		<?= $form->field($model, 'type')->dropDownList($typeData, ['prompt'=>Yii::t('app', 'Choose a type')]) ?>
 		<?= $form->field($model, 'parentId')->dropDownList($itemData, ['size'=>10]) ?>
+		<?= $form->field($model, 'type')->dropDownList($typeData, ['prompt'=>Yii::t('app', 'Choose a type')]) ?>
 	<?php endif; ?>
 </fieldset>
 
