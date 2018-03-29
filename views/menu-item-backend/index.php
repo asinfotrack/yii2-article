@@ -27,18 +27,18 @@ $this->title = Yii::t('app', 'Menu items');
 	<?= Button::widget([
 		'tagName'=>'a',
 		'icon'=>'asterisk',
-		'label'=>Yii::t('app', 'Create menu'),
+		'label'=>Yii::t('app', 'Create menu item'),
 		'options'=>[
-			'href'=>Url::to(['menu-item-backend/create-menu']),
+			'href'=>Url::to(['menu-item-backend/create']),
 			'class'=>'btn btn-primary',
 		],
 	]) ?>
 	<?= Button::widget([
 		'tagName'=>'a',
 		'icon'=>'asterisk',
-		'label'=>Yii::t('app', 'Create menu item'),
+		'label'=>Yii::t('app', 'Create menu'),
 		'options'=>[
-			'href'=>Url::to(['menu-item-backend/create']),
+			'href'=>Url::to(['menu-item-backend/create-menu']),
 			'class'=>'btn btn-primary',
 		],
 	]) ?>
