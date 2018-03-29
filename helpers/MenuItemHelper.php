@@ -74,7 +74,16 @@ class MenuItemHelper
 			if ($model->visible_item_names !== null) {
 				$rbacItemNames = explode(',', $model->visible_item_names);
 				foreach ($rbacItemNames as $rbacItemName) {
-					if (Yii::$app->user->can(trim($rbacItemName))) {
+					$rbacItemName = trim($rbacItemName);
+					if ($rbacItemName === '@' && !Yii::$app->user->isGuest) {
+						$itemArr['visible'] = true;
+						break;
+					}
+					if ($rbacItemName === '?' && Yii::$app->user->isGuest) {
+						$itemArr['visible'] = true;
+						break;
+					}
+					if (Yii::$app->user->can($rbacItemName)) {
 						$itemArr['visible'] = true;
 						break;
 					}
