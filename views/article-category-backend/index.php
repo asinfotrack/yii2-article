@@ -53,6 +53,10 @@ $this->title = Yii::t('app', 'Article categories');
 			},
 		],
 		[
+			'attribute'=>'title_internal',
+			'columnWidth'=>25,
+		],
+		[
 			'class'=>IdColumn::className(),
 			'label'=>Yii::t('app', 'Articles'),
 			'value'=>function ($model, $key, $index, $column) {

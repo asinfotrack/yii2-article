@@ -47,6 +47,10 @@ $typeFilter = call_user_func([Module::getInstance()->classMap['articleModel'], '
 		],
 		'title',
 		[
+			'attribute'=>'title_internal',
+			'columnWidth'=>25,
+		],
+		[
 			'class'=>AdvancedDataColumn::className(),
 			'attribute'=>'type',
 			'columnWidth'=>10,
