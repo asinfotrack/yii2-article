@@ -73,7 +73,7 @@ class MenuItem extends \yii\db\ActiveRecord
 	 */
 	public static function tableName()
 	{
-		return 'menu_item';
+		return '{{%menu_item}}';
 	}
 
 	/**
