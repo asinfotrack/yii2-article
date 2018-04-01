@@ -24,9 +24,10 @@ use asinfotrack\yii2\article\models\query\ArticleQuery;
  * @property integer $id
  * @property string $canonical
  * @property integer $type
+ * @property string $title_internal
  * @property string $title
  * @property string $title_head
- * @property string $title_menu
+ * @property string $subtitle
  * @property integer $published_at;
  * @property integer $published_from;
  * @property integer $published_to;
@@ -102,6 +103,7 @@ class Article extends \yii\db\ActiveRecord
 				'class'=>SluggableBehavior::className(),
 				'slugAttribute'=>'canonical',
 				'ensureUnique'=>true,
+				'immutable'=>true,
 				'value'=>function ($event) {
 					if (is_callable(Module::getInstance()->slugValueCallback)) {
 						return call_user_func(Module::getInstance()->slugValueCallback, $event->sender);
@@ -124,15 +126,15 @@ class Article extends \yii\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['title','title_head','title_menu','meta_keywords','meta_description'], 'trim'],
-			[['canonical','title','title_head','title_menu','meta_keywords','meta_description'], 'default'],
+			[['title_internal','title','title_head','subtitle','meta_keywords','meta_description'], 'trim'],
+			[['canonical','title_internal','title','title_head','subtitle','meta_keywords','meta_description'], 'default'],
 
 			[['canonical','title'], 'required'],
 
 			[['type'], 'in', 'range'=>static::$ALL_TYPES],
 			[['title_head'], 'string', 'max'=>70],
-			[['title_menu', 'meta_description'], 'string', 'max'=>160],
-			[['meta_keywords'], 'string', 'max'=>255],
+			[['meta_description'], 'string', 'max'=>160],
+			[['title_internal','title','subtitle','meta_keywords'], 'string', 'max'=>255],
 			[['meta_keywords'], function ($attribute, $params, $validator) {
 				if (empty($this->{$attribute})) return;
 				$this->{$attribute} = preg_replace('/\s*,\s*/', ',', $this->{$attribute});
@@ -182,9 +184,10 @@ class Article extends \yii\db\ActiveRecord
 			'id'=>Yii::t('app', 'ID'),
 			'canonical'=>Yii::t('app', 'Canonical'),
 			'type'=>Yii::t('app', 'Type of article'),
+			'title_internal'=>Yii::t('app', 'Internal title'),
 			'title'=>Yii::t('app', 'Title'),
 			'title_head'=>Yii::t('app', 'Title used in HTML-Head'),
-			'title_menu'=>Yii::t('app', 'Title used in Menus'),
+			'subtitle'=>Yii::t('app', 'Subtitle / Tagline'),
 			'published_at'=>Yii::t('app', 'Shown published date'),
 			'published_from'=>Yii::t('app', 'Published from'),
 			'published_to'=>Yii::t('app', 'Published to'),
@@ -209,9 +212,9 @@ class Article extends \yii\db\ActiveRecord
 	{
 		return [
 			'canonical'=>Yii::t('app', 'Automatically generated string which is used to identify the article uniquely'),
+			'title_internal'=>Yii::t('app', 'Internal title for the CMS. This title is not visible on the website and purely for organisational purposes. Defaults to regular title, if not set.'),
 			'title'=>Yii::t('app', 'The title of the article as shown within the rendered article'),
 			'title_head'=>Yii::t('app', 'Optional override to the main title which will be used in the head of the HTML and therefore in the Tab-Header of the browser'),
-			'title_menu'=>Yii::t('app', 'Optional override to the main title which can be used in menus'),
 			'published_at'=>Yii::t('app', 'Publishing date which will be shown in the article'),
 			'published_from'=>Yii::t('app', 'The article will be shown no earlier than this date if specified'),
 			'published_to'=>Yii::t('app', 'The article will be shown no later than this date if specified'),
@@ -248,6 +251,19 @@ class Article extends \yii\db\ActiveRecord
 		}
 
 		return parent::findOne($condition);
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function beforeSave($insert)
+	{
+		if (!parent::beforeSave($insert)) {
+			return false;
+		}
+
+		if (empty($this->title_internal))  $this->title_internal = $this->title;
+		return true;
 	}
 
 	/**

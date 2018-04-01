@@ -23,7 +23,7 @@ class ArticleCategorySearch extends \asinfotrack\yii2\article\models\ArticleCate
 	{
 		return [
 			[['id','created','created_by','updated','updated_by'], 'integer'],
-			[['canonical','title','title_head','title_menu'], 'safe'],
+			[['canonical','title_internal','title','title_head'], 'safe'],
 		];
 	}
 
@@ -66,12 +66,12 @@ class ArticleCategorySearch extends \asinfotrack\yii2\article\models\ArticleCate
 				'article_category.updated'=>$this->updated,
 				'article_category.updated_by'=>$this->updated_by,
 			]);
-
 			$query
 				->andFilterWhere(['like', 'article_category.canonical', $this->canonical])
+				->andFilterWhere(['like', 'article_category.title_internal', $this->title_internal])
 				->andFilterWhere(['like', 'article_category.title', $this->title])
-				->andFilterWhere(['like', 'article_category.title_head', $this->title_head])
-				->andFilterWhere(['like', 'article_category.title_menu', $this->title_menu]);
+				->andFilterWhere(['like', 'article_category.title_head', $this->title_head]);
+
 		}
 
 		return $dataProvider;

@@ -67,9 +67,9 @@ if (count($model->articles) > 0) {
 			'format'=>'html',
 			'value'=>Html::tag('code', $model->canonical),
 		],
+		'title_internal',
 		'title',
 		'title_head',
-		'title_menu',
 		[
 			'label'=>Yii::t('app', 'Parent category'),
 			'format'=>'html',

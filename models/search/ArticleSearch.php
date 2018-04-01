@@ -22,7 +22,7 @@ class ArticleSearch extends \asinfotrack\yii2\article\models\Article
 	{
 		return [
 			[['id','type','published_at','published_from','published_to','created','created_by','updated','updated_by'], 'integer'],
-			[['canonical','title','title_head','title_menu','meta_keywords','meta_description','intro','content'], 'safe'],
+			[['canonical','title_internal','title','title_head','subtitle','meta_keywords','meta_description','intro','content'], 'safe'],
 		];
 	}
 
@@ -65,9 +65,10 @@ class ArticleSearch extends \asinfotrack\yii2\article\models\Article
 
 			$query
 				->andFilterWhere(['like', 'article.canonical', $this->canonical])
+				->andFilterWhere(['like', 'article.title_internal', $this->title_internal])
 				->andFilterWhere(['like', 'article.title', $this->title])
 				->andFilterWhere(['like', 'article.title_head', $this->title_head])
-				->andFilterWhere(['like', 'article.title_menu', $this->title_menu])
+				->andFilterWhere(['like', 'article.subtitle', $this->subtitle])
 				->andFilterWhere(['like', 'article.meta_keywords', $this->meta_keywords])
 				->andFilterWhere(['like', 'article.meta_description', $this->meta_description])
 				->andFilterWhere(['like', 'article.intro', $this->intro])

@@ -23,9 +23,9 @@ use yii\helpers\Inflector;
  * @property integer $rgt
  * @property integer $depth
  * @property string $canonical
+ * @property string $title_internal
  * @property string $title
  * @property string $title_head
- * @property string $title_menu
  * @property integer $created
  * @property integer $created_by
  * @property integer $updated
@@ -80,6 +80,7 @@ class ArticleCategory extends \yii\db\ActiveRecord
 				'class'=>SluggableBehavior::className(),
 				'slugAttribute'=>'canonical',
 				'ensureUnique'=>true,
+				'immutable'=>true,
 				'value'=>function ($event) {
 					if (is_callable(Module::getInstance()->slugValueCallback)) {
 						return call_user_func(Module::getInstance()->slugValueCallback, $event->sender);
@@ -102,13 +103,13 @@ class ArticleCategory extends \yii\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['title','title_head','title_menu'], 'trim'],
-			[['parentId','canonical','title','title_head','title_menu'], 'default'],
+			[['title_internal','title','title_head'], 'trim'],
+			[['parentId','canonical','title_internal','title','title_head'], 'default'],
 
 			[['canonical','title'], 'required'],
 
 			[['title_head'], 'string', 'max'=>70],
-			[['title_menu'], 'string', 'max'=>255],
+			[['title_internal','title'], 'string', 'max'=>255],
 
 			[['canonical'], 'unique'],
 
@@ -139,9 +140,9 @@ class ArticleCategory extends \yii\db\ActiveRecord
 		return [
 			'id'=>Yii::t('app', 'ID'),
 			'canonical'=>Yii::t('app', 'Canonical'),
+			'title_internal'=>Yii::t('app', 'Internal title'),
 			'title'=>Yii::t('app', 'Title'),
 			'title_head'=>Yii::t('app', 'Title used in HTML-Head'),
-			'title_menu'=>Yii::t('app', 'Title used in Menus'),
 			'created'=>Yii::t('app', 'Created at'),
 			'created_by'=>Yii::t('app', 'Created by'),
 			'updated'=>Yii::t('app', 'Updated at'),
@@ -158,9 +159,9 @@ class ArticleCategory extends \yii\db\ActiveRecord
 	{
 		return [
 			'canonical'=>Yii::t('app', 'Automatically generated string which is used to identify the article category uniquely'),
+			'title_internal'=>Yii::t('app', 'Internal title for the CMS. This title is not visible on the website and purely for organisational purposes. Defaults to regular title, if not set.'),
 			'title'=>Yii::t('app', 'The title of the article category as shown within the rendered website'),
 			'title_head'=>Yii::t('app', 'Optional override to the main title which will be used in the head of the HTML and therefore in the Tab-Header of the browser'),
-			'title_menu'=>Yii::t('app', 'Optional override to the main title which can be used in menus'),
 		];
 	}
 
@@ -200,6 +201,19 @@ class ArticleCategory extends \yii\db\ActiveRecord
 		}
 
 		return parent::findOne($condition);
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function beforeSave($insert)
+	{
+		if (!parent::beforeSave($insert)) {
+			return false;
+		}
+
+		if (empty($this->title_internal))  $this->title_internal = $this->title;
+		return true;
 	}
 
 	/**

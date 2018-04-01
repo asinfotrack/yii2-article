@@ -27,10 +27,17 @@ $form = ActiveForm::begin([
 <?= $form->errorSummary($model); ?>
 
 <fieldset>
+	<legend><?= Yii::t('app', 'General configuration') ?></legend>
+	<?= $form->field($model, 'title_internal')->textInput(['maxlength'=>true]) ?>
+	<?php if (!$model->isNewRecord): ?>
+		<?= $form->field($model, 'canonical')->textInput(['maxlength'=>true]) ?>
+	<?php endif; ?>
+</fieldset>
+
+<fieldset>
 	<legend><?= Yii::t('app', 'Titles') ?></legend>
 	<?= $form->field($model, 'title')->textInput(['maxlength'=>true]) ?>
 	<?= $form->field($model, 'title_head')->textInput(['maxlength'=>true]) ?>
-	<?= $form->field($model, 'title_menu')->textInput(['maxlength'=>true]) ?>
 </fieldset>
 
 <fieldset>
