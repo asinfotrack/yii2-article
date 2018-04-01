@@ -1,14 +1,16 @@
 <?php
-
-use asinfotrack\yii2\article\models\Article;
-use asinfotrack\yii2\article\models\MenuItem;use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use asinfotrack\yii2\article\Module;use yii\helpers\Json;
-use yii\web\JsExpression;
+use yii\helpers\Json;
+use asinfotrack\yii2\article\assets\ArticleModuleAsset;
+use asinfotrack\yii2\article\models\Article;
+use asinfotrack\yii2\article\models\MenuItem;use yii\bootstrap\ActiveForm;
+use asinfotrack\yii2\article\Module;
 
 /* @var $this \yii\web\View */
 /* @var $model \asinfotrack\yii2\article\models\MenuItem|\creocoder\nestedsets\NestedSetsBehavior */
+
+ArticleModuleAsset::register($this);
 
 $module = Module::getInstance();
 
@@ -22,41 +24,6 @@ $form = ActiveForm::begin([
 
 $typeData = call_user_func([Module::getInstance()->classMap['menuItemModel'], 'typeFilter']);
 $articleData = ArrayHelper::map(Article::find()->type([Article::TYPE_ARTICLE, Article::TYPE_UNDEFINED])->all(), 'id', 'title');
-
-
-$this->registerJs(new JsExpression("
-	var typeDropdown = $('#menuitem-type');
-	
-	function showRelevantFieldsets() {
-		var typeVal = parseInt(typeDropdown.val());
-		
-		$('fieldset').each(function (el) {
-			var attrVal = $(this).attr('data-types');
-			if (typeof attrVal === typeof undefined || attrVal === false || attrVal.length < 3) return;
-			
-			var attrTypes = JSON.parse(attrVal);
-			var found = false;
-			for (var i=0; i<attrTypes.length; i++) {
-				if (attrTypes[i] === typeVal) {
-					found = true;
-					break;
-				}
-			}
-			
-			if (found) {
-				$(this).show();
-			} else {
-				$(this).hide();
-			}
-		});
-	} 
-	
-	typeDropdown.change(function (event) {
-		showRelevantFieldsets();
-	});
-	
-	showRelevantFieldsets();
-"));
 ?>
 
 <?= $form->errorSummary($model); ?>

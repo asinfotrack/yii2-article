@@ -2,10 +2,15 @@
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Json;
 use asinfotrack\yii2\article\Module;
+use asinfotrack\yii2\article\assets\ArticleModuleAsset;
+use asinfotrack\yii2\article\models\Article;
 
 /* @var $this \yii\web\View */
 /* @var $model \asinfotrack\yii2\article\models\Article */
+
+ArticleModuleAsset::register($this);
 
 $module = Module::getInstance();
 $form = ActiveForm::begin([
@@ -27,7 +32,7 @@ $form = ActiveForm::begin([
 </fieldset>
 <?php endif; ?>
 
-<fieldset>
+<fieldset data-types="<?= Json::encode([Article::TYPE_ARTICLE]) ?>">
 	<legend><?= Yii::t('app', 'Titles') ?></legend>
 	<?= $form->field($model, 'title')->textInput(['maxlength'=>true]) ?>
 	<?= $form->field($model, 'title_head')->textInput(['maxlength'=>true]) ?>
@@ -39,18 +44,20 @@ $form = ActiveForm::begin([
 	<?= $this->render('_form_callback_input', [
 		'form'=>$form, 'model'=>$model, 'attribute'=>'intro', 'callback'=>$module->introInputCallback,
 	]) ?>
-	<?= $this->render('_form_callback_input', [
-		'form'=>$form, 'model'=>$model, 'attribute'=>'content', 'callback'=>$module->contentInputCallback,
-	]) ?>
+	<div data-types="<?= Json::encode([Article::TYPE_ARTICLE]) ?>">
+		<?= $this->render('_form_callback_input', [
+			'form'=>$form, 'model'=>$model, 'attribute'=>'content', 'callback'=>$module->contentInputCallback,
+		]) ?>
+	</div>
 </fieldset>
 
-<fieldset>
+<fieldset data-types="<?= Json::encode([Article::TYPE_ARTICLE]) ?>">
 	<legend><?= Yii::t('app', 'Meta & SEO') ?></legend>
 	<?= $form->field($model, 'meta_keywords')->textInput(['maxlength'=>true]) ?>
 	<?= $form->field($model, 'meta_description')->textarea(['rows'=>3]) ?>
 </fieldset>
 
-<fieldset>
+<fieldset data-types="<?= Json::encode([Article::TYPE_ARTICLE]) ?>">
 	<legend><?= Yii::t('app', 'Settings') ?></legend>
 	<?= $this->render('_form_callback_input', [
 		'form'=>$form, 'model'=>$model, 'attribute'=>'published_at', 'callback'=>$module->dateInputCallback,
