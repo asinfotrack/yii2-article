@@ -37,3 +37,7 @@ composer.phar
 # phpunit and its config itself is not needed
 phpunit.phar
 /phpunit.xml
+
+# grunt etc
+/.sass-cache
+/node_modules
