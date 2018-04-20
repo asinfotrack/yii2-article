@@ -3,7 +3,7 @@
 /**
  * Class m180401_124903_columns_article_refactoring
  */
-class m180420_124903_column_article_category extends \asinfotrack\yii2\toolbox\console\Migration
+class m180420_124903_columns_article_category extends \asinfotrack\yii2\toolbox\console\Migration
 {
 
 	/**
