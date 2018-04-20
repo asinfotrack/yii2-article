@@ -49,6 +49,13 @@ $form = ActiveForm::begin([
 	]) ?>
 </fieldset>
 
+<fieldset>
+	<legend><?= Yii::t('app', 'Visibility and rights') ?></legend>
+	<?= $form->field($model, 'editor_item_names')->textInput(['maxlength'=>true]) ?>
+	<?= $form->field($model, 'editor_callback_class')->textInput(['maxlength'=>true]) ?>
+	<?= $form->field($model, 'editor_callback_method')->textInput(['maxlength'=>true]) ?>
+</fieldset>
+
 <div class="form-group">
 	<?= Html::submitButton(Yii::t('app', 'Save'), ['class'=>'btn btn-primary']) ?>
 </div>

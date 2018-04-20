@@ -26,6 +26,9 @@ use yii\helpers\Inflector;
  * @property string $title_internal
  * @property string $title
  * @property string $title_head
+ * @property string $editor_item_names
+ * @property string $editor_callback_class
+ * @property string $editor_callback_method
  * @property integer $created
  * @property integer $created_by
  * @property integer $updated
@@ -103,13 +106,15 @@ class ArticleCategory extends \yii\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['title_internal','title','title_head'], 'trim'],
-			[['parentId','canonical','title_internal','title','title_head'], 'default'],
+			[['title_internal','title','title_head','editor_item_names','editor_callback_class','editor_callback_method'], 'trim'],
+			[['parentId','canonical','title_internal','title','title_head','editor_item_names','editor_callback_class','editor_callback_method'], 'default'],
 
 			[['canonical','title'], 'required'],
 
 			[['title_head'], 'string', 'max'=>70],
-			[['title_internal','title'], 'string', 'max'=>255],
+			[['title_internal','title','editor_item_names','editor_callback_class','editor_callback_method'], 'string', 'max'=>255],
+
+			[['editor_item_names'], 'match', 'pattern'=>'/^[\w -_]+(,[\w -_]+)*$/'],
 
 			[['canonical'], 'unique'],
 
@@ -143,6 +148,9 @@ class ArticleCategory extends \yii\db\ActiveRecord
 			'title_internal'=>Yii::t('app', 'Internal title'),
 			'title'=>Yii::t('app', 'Title'),
 			'title_head'=>Yii::t('app', 'Title used in HTML-Head'),
+			'editor_item_names'=>Yii::t('app', 'Visible to roles'),
+			'editor_callback_class'=>Yii::t('app', 'Editor Callback class'),
+			'editor_callback_method'=>Yii::t('app', 'Editor Callback method'),
 			'created'=>Yii::t('app', 'Created at'),
 			'created_by'=>Yii::t('app', 'Created by'),
 			'updated'=>Yii::t('app', 'Updated at'),
