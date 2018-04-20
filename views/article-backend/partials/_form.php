@@ -41,14 +41,14 @@ $form = ActiveForm::begin([
 
 <fieldset>
 	<legend><?= Yii::t('app', 'Content') ?></legend>
-	<?= $this->render('_form_callback_input', [
-		'form'=>$form, 'model'=>$model, 'attribute'=>'intro', 'callback'=>$module->introInputCallback,
-	]) ?>
 	<div data-types="<?= Json::encode([Article::TYPE_ARTICLE]) ?>">
 		<?= $this->render('_form_callback_input', [
-			'form'=>$form, 'model'=>$model, 'attribute'=>'content', 'callback'=>$module->contentInputCallback,
+			'form'=>$form, 'model'=>$model, 'attribute'=>'intro', 'callback'=>$module->introInputCallback,
 		]) ?>
 	</div>
+	<?= $this->render('_form_callback_input', [
+		'form'=>$form, 'model'=>$model, 'attribute'=>'content', 'callback'=>$module->contentInputCallback,
+	]) ?>
 </fieldset>
 
 <fieldset data-types="<?= Json::encode([Article::TYPE_ARTICLE]) ?>">
