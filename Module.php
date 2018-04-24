@@ -41,6 +41,7 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 		'articleCategorySearchModel'=>'asinfotrack\yii2\article\models\search\ArticleCategorySearch',
 		'menuItemModel'=>'asinfotrack\yii2\article\models\MenuItem',
 		'menuItemSearchModel'=>'asinfotrack\yii2\article\models\search\MenuItemSearch',
+		'stateModel'=>'asinfotrack\yii2\article\models\State',
 	];
 
 	/**

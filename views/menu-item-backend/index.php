@@ -19,7 +19,7 @@ use asinfotrack\yii2\article\Module;
 $query = call_user_func([Module::getInstance()->classMap['menuItemModel'], 'find']);
 $menuFilter = ArrayHelper::map($query->roots()->orderBy(['menu_item.label'=>SORT_ASC])->all(), 'tree', 'label');
 $typeFilter = call_user_func([Module::getInstance()->classMap['menuItemModel'], 'typeFilter']);
-
+$stateFilter = ArrayHelper::map(call_user_func([Module::getInstance()->classMap['stateModel'], 'find'])->all(), 'id', 'name');;
 $this->title = Yii::t('app', 'Menu items');
 ?>
 
@@ -78,11 +78,12 @@ $this->title = Yii::t('app', 'Menu items');
 			},
 		],
 		[
-			'class'=>BooleanColumn::className(),
-			'attribute'=>'is_published',
-			'enableSorting'=>false,
+			'attribute'=>'state_id',
+			'filter'=>$stateFilter,
+			'value'=>function ($model, $key, $index, $column) use ($typeFilter) {
+				return $model->state->name;
+			},
 		],
-
 		[
 			'class'=>AdvancedActionColumn::className(),
 			'header'=>Yii::t('app', 'Order'),

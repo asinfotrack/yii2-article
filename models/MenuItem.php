@@ -30,7 +30,7 @@ use yii\validators\UniqueValidator;
  * @property string $label
  * @property string $icon
  * @property bool $is_new_tab
- * @property bool $is_published
+ * @property integer $state_id
  * @property string $path_info
  * @property integer $article_id
  * @property string $route
@@ -50,6 +50,7 @@ use yii\validators\UniqueValidator;
  * @property string $treeLabel
  *
  * @property \asinfotrack\yii2\article\models\Article $article
+ * @property \asinfotrack\yii2\article\models\State $state
  */
 class MenuItem extends \yii\db\ActiveRecord
 {
@@ -83,19 +84,19 @@ class MenuItem extends \yii\db\ActiveRecord
 	{
 		return [
 			'tree'=>[
-				'class'=>NestedSetsBehavior::className(),
+				'class'=>NestedSetsBehavior::class,
 				'treeAttribute'=>'tree',
 				'leftAttribute'=>'lft',
 				'rightAttribute'=>'rgt',
 				'depthAttribute'=>'depth',
 			],
 			'timestamp'=>[
-				'class'=>TimestampBehavior::className(),
+				'class'=>TimestampBehavior::class,
 				'createdAtAttribute'=>'created',
 				'updatedAtAttribute'=>'updated',
 			],
 			'blameable'=>[
-				'class'=>BlameableBehavior::className(),
+				'class'=>BlameableBehavior::class,
 				'createdByAttribute'=>'created_by',
 				'updatedByAttribute'=>'updated_by',
 			],
@@ -117,7 +118,7 @@ class MenuItem extends \yii\db\ActiveRecord
 
 			[['icon','label','visible_item_names','visible_callback_class','visible_callback_method'], 'string', 'max'=>255],
 			[['type'], 'in', 'range'=>static::$ALL_TYPES],
-			[['is_new_tab','is_published'], 'boolean'],
+			[['is_new_tab'], 'boolean'],
 			[['visible_item_names'], 'match', 'pattern'=>'/^[\w -_]+(,[\w -_]+)*$/'],
 
 			[['path_info'], 'required', 'when'=>function ($model) {
@@ -151,9 +152,13 @@ class MenuItem extends \yii\db\ActiveRecord
 				}
 			}],
 
+			[['state_id'], 'required'],
+			[['state_id'], 'integer'],
+			[['state_id'], 'exist', 'targetClass'=>State::class, 'targetAttribute'=>'id'],
+
 			[['article_id'], 'required', 'when'=>function ($model) { return intval($model->type) === self::TYPE_ARTICLE; }],
 			[['article_id'], 'integer'],
-			[['article_id'], 'exist', 'targetClass'=>Article::className(), 'targetAttribute'=>'id'],
+			[['article_id'], 'exist', 'targetClass'=>Article::class, 'targetAttribute'=>'id'],
 
 			[['route'], 'required', 'when'=>function ($model) { return intval($model->type) === self::TYPE_ROUTE; }],
 			[['route'], 'string', 'max'=>255],
@@ -171,7 +176,7 @@ class MenuItem extends \yii\db\ActiveRecord
 			[['url'], 'required', 'when'=>function ($model) { return intval($model->type) === self::TYPE_URL; }],
 			[['url'], 'url'],
 
-			[['parentId'], 'exist', 'targetClass'=>MenuItem::className(), 'targetAttribute'=>'id'],
+			[['parentId'], 'exist', 'targetClass'=>MenuItem::class, 'targetAttribute'=>'id'],
 			[['parentId'], function ($attribute, $params, $validator) {
 				if ($this->isNewRecord || empty($this->{$attribute})) return;
 
@@ -203,7 +208,7 @@ class MenuItem extends \yii\db\ActiveRecord
 			'icon'=>Yii::t('app', 'Icon'),
 			'label'=>Yii::t('app', 'Label'),
 			'is_new_tab'=>Yii::t('app', 'New tab'),
-			'is_published'=>Yii::t('app', 'Published'),
+			'state_id'=>Yii::t('app', 'State'),
 			'path_info'=>Yii::t('app', 'Path info'),
 			'article_id'=>Yii::t('app', 'Article'),
 			'route'=>Yii::t('app', 'Route'),
@@ -373,7 +378,15 @@ class MenuItem extends \yii\db\ActiveRecord
 	 */
 	public function getArticle()
 	{
-		return $this->hasOne(Article::className(), ['id'=>'article_id']);
+		return $this->hasOne(Article::class, ['id'=>'article_id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getState()
+	{
+		return $this->hasOne(State::class, ['id'=>'state_id']);
 	}
 
 	/**

@@ -50,9 +50,8 @@ $this->title = Yii::t('app', $model->scenario !== MenuItem::SCENARIO_MENU ? 'Men
 			'visible'=>!$model->isRoot(),
 		],
 		[
-			'attribute'=>'is_published',
-			'format'=>'boolean',
-			'visible'=>!$model->isRoot(),
+			'attribute'=>'state_id',
+			'value'=>$model->state->name,
 		],
 		[
 			'attribute'=>'type',
