@@ -127,7 +127,7 @@ class MenuItemHelper
 	protected static function prepareItem(MenuItem $model, array &$targetArr, array &$allItems) : void
 	{
 		//prepare item array
-		$itemArr = ['label'=>$model->label, 'icon'=>$model->icon, 'visible'=>true, 'options'=>['data'=>['menu-item-id'=>$model->id]]];
+		$itemArr = ['label'=>$model->label, 'icon'=>$model->icon, 'visible'=>true, 'options'=>['data'=>['menu-item-id'=>$model->id, 'is_published'=>$model->is_published]]];
 		switch ($model->type) {
 			case MenuItem::TYPE_ROUTE:
 				$finalRoute = ArrayHelper::merge([$model->route], empty($model->route_params) ? [] : Json::decode($model->route_params));
