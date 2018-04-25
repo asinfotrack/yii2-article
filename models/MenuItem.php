@@ -30,7 +30,7 @@ use yii\validators\UniqueValidator;
  * @property string $label
  * @property string $icon
  * @property bool $is_new_tab
- * @property integer $state_id
+ * @property bool $is_published
  * @property string $path_info
  * @property integer $article_id
  * @property string $route
@@ -50,7 +50,6 @@ use yii\validators\UniqueValidator;
  * @property string $treeLabel
  *
  * @property \asinfotrack\yii2\article\models\Article $article
- * @property \asinfotrack\yii2\article\models\State $state
  */
 class MenuItem extends \yii\db\ActiveRecord
 {
@@ -118,7 +117,7 @@ class MenuItem extends \yii\db\ActiveRecord
 
 			[['icon','label','visible_item_names','visible_callback_class','visible_callback_method'], 'string', 'max'=>255],
 			[['type'], 'in', 'range'=>static::$ALL_TYPES],
-			[['is_new_tab'], 'boolean'],
+			[['is_new_tab','is_published'], 'boolean'],
 			[['visible_item_names'], 'match', 'pattern'=>'/^[\w -_]+(,[\w -_]+)*$/'],
 
 			[['path_info'], 'required', 'when'=>function ($model) {
@@ -151,10 +150,6 @@ class MenuItem extends \yii\db\ActiveRecord
 					}
 				}
 			}],
-
-			[['state_id'], 'required'],
-			[['state_id'], 'integer'],
-			[['state_id'], 'exist', 'targetClass'=>State::class, 'targetAttribute'=>'id'],
 
 			[['article_id'], 'required', 'when'=>function ($model) { return intval($model->type) === self::TYPE_ARTICLE; }],
 			[['article_id'], 'integer'],
@@ -208,7 +203,7 @@ class MenuItem extends \yii\db\ActiveRecord
 			'icon'=>Yii::t('app', 'Icon'),
 			'label'=>Yii::t('app', 'Label'),
 			'is_new_tab'=>Yii::t('app', 'New tab'),
-			'state_id'=>Yii::t('app', 'State'),
+			'is_published'=>Yii::t('app', 'Published'),
 			'path_info'=>Yii::t('app', 'Path info'),
 			'article_id'=>Yii::t('app', 'Article'),
 			'route'=>Yii::t('app', 'Route'),
@@ -379,14 +374,6 @@ class MenuItem extends \yii\db\ActiveRecord
 	public function getArticle()
 	{
 		return $this->hasOne(Article::class, ['id'=>'article_id']);
-	}
-
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getState()
-	{
-		return $this->hasOne(State::class, ['id'=>'state_id']);
 	}
 
 	/**

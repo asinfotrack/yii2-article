@@ -1,6 +1,5 @@
 <?php
 
-use asinfotrack\yii2\article\models\State;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
@@ -64,7 +63,7 @@ $articleData = ArrayHelper::map(Article::find()->type([Article::TYPE_ARTICLE, Ar
 	<fieldset>
 		<legend><?= Yii::t('app', 'Settings') ?></legend>
 		<?= $form->field($model, 'is_new_tab')->checkbox() ?>
-		<?= $form->field($model, 'state_id')->dropDownList(ArrayHelper::map(State::find()->all(), 'id', 'name'), ['prompt'=>Yii::t('app', 'Choose an state')]) ?>
+		<?= $form->field($model, 'is_published')->checkbox() ?>
 	</fieldset>
 
 	<fieldset>
