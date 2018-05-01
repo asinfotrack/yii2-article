@@ -21,7 +21,7 @@ class MenuItemSearch extends \asinfotrack\yii2\article\models\MenuItem
 	public function rules()
 	{
 		return [
-			[['id','tree','lft','rgt','depth','type','is_new_tab','is_published','article_id','created','created_by','updated','updated_by'], 'integer'],
+			[['id','tree','lft','rgt','depth','type','state','is_new_tab','article_id','created','created_by','updated','updated_by'], 'integer'],
 			[['icon','label','path_info','route','route_params','url','visible_item_names','visible_callback_class','visible_callback_method'], 'safe'],
 		];
 	}
@@ -70,8 +70,8 @@ class MenuItemSearch extends \asinfotrack\yii2\article\models\MenuItem
 				'menu_item.rgt'=>$this->rgt,
 				'menu_item.depth'=>$this->depth,
 				'menu_item.type'=>$this->type,
+				'menu_item.state'=>$this->state,
 				'menu_item.is_new_tab'=>$this->is_new_tab,
-				'menu_item.is_published'=>$this->is_published,
 				'menu_item.article_id'=>$this->article_id,
 				'menu_item.created'=>$this->created,
 				'menu_item.created_by'=>$this->created_by,

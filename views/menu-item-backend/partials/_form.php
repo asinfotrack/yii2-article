@@ -25,6 +25,7 @@ $form = ActiveForm::begin([
 ]);
 
 $typeData = call_user_func([Module::getInstance()->classMap['menuItemModel'], 'typeFilter']);
+$stateData = call_user_func([Module::getInstance()->classMap['menuItemModel'], 'stateFilter']);
 $articleData = ArrayHelper::map(Article::find()->type([Article::TYPE_ARTICLE, Article::TYPE_UNDEFINED])->all(), 'id', 'title');
 ?>
 
@@ -62,8 +63,8 @@ $articleData = ArrayHelper::map(Article::find()->type([Article::TYPE_ARTICLE, Ar
 
 	<fieldset>
 		<legend><?= Yii::t('app', 'Settings') ?></legend>
+		<?= $form->field($model, 'state')->dropDownList($stateData, ['prompt'=>Yii::t('app', 'Choose a state')]) ?>
 		<?= $form->field($model, 'is_new_tab')->checkbox() ?>
-		<?= $form->field($model, 'is_published')->checkbox() ?>
 	</fieldset>
 
 	<fieldset>

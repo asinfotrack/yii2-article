@@ -66,6 +66,17 @@ class MenuItemQuery extends \yii\db\ActiveQuery
 	}
 
 	/**
+	 * Named scope for filtering menu items with a certain state
+	 *
+	 * @return \asinfotrack\yii2\article\models\query\MenuItemQuery $this self for chaining
+	 */
+	public function states($states)
+	{
+		$this->andWhere(['menu_item.state'=>$states]);
+		return $this;
+	}
+
+	/**
 	 * Named scope for filtering menu items by their path info
 	 *
 	 * @return \asinfotrack\yii2\article\models\query\MenuItemQuery $this self for chaining

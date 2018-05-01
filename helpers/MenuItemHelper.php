@@ -3,6 +3,7 @@ namespace asinfotrack\yii2\article\helpers;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\Json;
 use asinfotrack\yii2\article\Module;
@@ -127,7 +128,11 @@ class MenuItemHelper
 	protected static function prepareItem(MenuItem $model, array &$targetArr, array &$allItems) : void
 	{
 		//prepare item array
-		$itemArr = ['label'=>$model->label, 'icon'=>$model->icon, 'visible'=>true, 'options'=>['data'=>['menu-item-id'=>$model->id, 'is_published'=>$model->is_published]]];
+		$options = ['data'=>['menu-item-id'=>$model->id, 'state'=>$model->state]];
+		if ($model->state === MenuItem::STATE_PUBLISHED_HIDDEN) {
+			Html::addCssClass($options, 'hidden');
+		}
+		$itemArr = ['label'=>$model->label, 'icon'=>$model->icon, 'visible'=>true, 'options'=>$options];
 		switch ($model->type) {
 			case MenuItem::TYPE_ROUTE:
 				$finalRoute = ArrayHelper::merge([$model->route], empty($model->route_params) ? [] : Json::decode($model->route_params));

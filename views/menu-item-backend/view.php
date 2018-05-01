@@ -12,6 +12,7 @@ use asinfotrack\yii2\toolbox\widgets\Button;
 /* @var $model \asinfotrack\yii2\article\models\MenuItem|\creocoder\nestedsets\NestedSetsBehavior */
 
 $typeFilter = call_user_func([Module::getInstance()->classMap['menuItemModel'], 'typeFilter']);
+$stateFilter = call_user_func([Module::getInstance()->classMap['menuItemModel'], 'stateFilter']);
 
 $this->title = Yii::t('app', $model->scenario !== MenuItem::SCENARIO_MENU ? 'Menu item details' : 'Menu details');
 ?>
@@ -50,8 +51,8 @@ $this->title = Yii::t('app', $model->scenario !== MenuItem::SCENARIO_MENU ? 'Men
 			'visible'=>!$model->isRoot(),
 		],
 		[
-			'attribute'=>'is_published',
-			'format'=>'boolean',
+			'attribute'=>'state',
+			'value'=>$model->isRoot() ? null : $stateFilter[$model->state],
 			'visible'=>!$model->isRoot(),
 		],
 		[

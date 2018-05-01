@@ -29,6 +29,11 @@ class ArticleCategoryAction extends \yii\web\ViewAction
 	/**
 	 * @var string title of the view
 	 */
+	public $title = 'NO TITLE';
+
+	/**
+	 * @var string meta title of the view
+	 */
 	public $metaTitle = 'NO TITLE';
 
 	/**
@@ -89,6 +94,7 @@ class ArticleCategoryAction extends \yii\web\ViewAction
 		$this->widgetConfig['items'] = $query;
 
 		return $this->controller->render($viewName, [
+			'title'=>$this->title,
 			'metaTitle'=>$this->metaTitle,
 			'query'=>$query,
 			'widgetConfig'=>$this->widgetConfig,

@@ -27,10 +27,10 @@ use yii\validators\UniqueValidator;
  * @property integer $rgt
  * @property integer $depth
  * @property integer $type
+ * @property integer $state
  * @property string $label
  * @property string $icon
  * @property bool $is_new_tab
- * @property bool $is_published
  * @property string $path_info
  * @property integer $article_id
  * @property string $route
@@ -62,6 +62,13 @@ class MenuItem extends \yii\db\ActiveRecord
 	public const TYPE_NO_LINK = 10;
 
 	public static $ALL_TYPES = [self::TYPE_ARTICLE, self::TYPE_ROUTE, self::TYPE_URL, self::TYPE_NO_LINK];
+
+	public const STATE_PUBLISHED = 10;
+	public const STATE_PUBLISHED_HIDDEN = 20;
+	public const STATE_UNPUBLISHED = 50;
+
+	public static $ALL_STATES = [self::STATE_PUBLISHED, self::STATE_PUBLISHED_HIDDEN, self::STATE_UNPUBLISHED];
+	public static $RENDERED_STATES = [self::STATE_PUBLISHED, self::STATE_PUBLISHED_HIDDEN];
 
 	/**
 	 * @var integer the parent menu item id during form handling
@@ -113,11 +120,12 @@ class MenuItem extends \yii\db\ActiveRecord
 			[['path_info'], 'filter', 'filter'=>function($value) { return trim($value, '/'); }],
 
 			[['label'], 'required'],
-			[['parentId','type'], 'required', 'on'=>self::SCENARIO_DEFAULT],
+			[['parentId','type','state'], 'required', 'on'=>self::SCENARIO_DEFAULT],
 
 			[['icon','label','visible_item_names','visible_callback_class','visible_callback_method'], 'string', 'max'=>255],
 			[['type'], 'in', 'range'=>static::$ALL_TYPES],
-			[['is_new_tab','is_published'], 'boolean'],
+			[['state'], 'in', 'range'=>static::$ALL_STATES],
+			[['is_new_tab'], 'boolean'],
 			[['visible_item_names'], 'match', 'pattern'=>'/^[\w -_]+(,[\w -_]+)*$/'],
 
 			[['path_info'], 'required', 'when'=>function ($model) {
@@ -200,10 +208,10 @@ class MenuItem extends \yii\db\ActiveRecord
 		return [
 			'id'=>Yii::t('app', 'ID'),
 			'type'=>Yii::t('app', 'Typ'),
+			'state'=>Yii::t('app', 'State'),
 			'icon'=>Yii::t('app', 'Icon'),
 			'label'=>Yii::t('app', 'Label'),
 			'is_new_tab'=>Yii::t('app', 'New tab'),
-			'is_published'=>Yii::t('app', 'Published'),
 			'path_info'=>Yii::t('app', 'Path info'),
 			'article_id'=>Yii::t('app', 'Article'),
 			'route'=>Yii::t('app', 'Route'),
@@ -283,6 +291,7 @@ class MenuItem extends \yii\db\ActiveRecord
 		if ($this->scenario === self::SCENARIO_MENU) {
 			$this->parentId = null;
 			$this->type = null;
+			$this->state = self::STATE_PUBLISHED;
 		}
 		return parent::beforeValidate();
 	}
@@ -424,6 +433,20 @@ class MenuItem extends \yii\db\ActiveRecord
 			self::TYPE_ROUTE=>Yii::t('app', 'Internal route'),
 			self::TYPE_URL=>Yii::t('app', 'Fixed url'),
 			self::TYPE_NO_LINK=>Yii::t('app', 'No link / Label'),
+		];
+	}
+
+	/**
+	 * Returns a filter for the state field as used by grid views
+	 *
+	 * @return array array containing the types as keys and the labels as values
+	 */
+	public static function stateFilter()
+	{
+		return [
+			self::STATE_PUBLISHED=>Yii::t('app', 'Published (visible)'),
+			self::STATE_PUBLISHED_HIDDEN=>Yii::t('app', 'Published (invisible)'),
+			self::STATE_UNPUBLISHED=>Yii::t('app', 'Unpublished / archived'),
 		];
 	}
 
