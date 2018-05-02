@@ -35,7 +35,6 @@ $form = ActiveForm::begin([
 <fieldset data-types="<?= Json::encode([Article::TYPE_ARTICLE]) ?>">
 	<legend><?= Yii::t('app', 'Titles') ?></legend>
 	<?= $form->field($model, 'title')->textInput(['maxlength'=>true]) ?>
-	<?= $form->field($model, 'title_head')->textInput(['maxlength'=>true]) ?>
 	<?= $form->field($model, 'subtitle')->textInput(['maxlength'=>true]) ?>
 </fieldset>
 
@@ -53,6 +52,7 @@ $form = ActiveForm::begin([
 
 <fieldset data-types="<?= Json::encode([Article::TYPE_ARTICLE]) ?>">
 	<legend><?= Yii::t('app', 'Meta & SEO') ?></legend>
+	<?= $form->field($model, 'title_head')->textInput(['maxlength'=>true]) ?>
 	<?= $form->field($model, 'meta_keywords')->textInput(['maxlength'=>true]) ?>
 	<?= $form->field($model, 'meta_description')->textarea(['rows'=>3]) ?>
 </fieldset>
