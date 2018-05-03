@@ -92,6 +92,11 @@ accesses the `ArticleRender`. Make sure you use the same module-ID as you use in
 ```
 
 ## Changelog
+###### [v0.8.2](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.2)
+- bugfix in articles Widget
+
+###### [v0.8.1](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.1)
+- check permisssions in article backend based on ArticleCategory editor fields
 
 ###### [v0.8.0](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.0)
 - main classes in a stable condition
