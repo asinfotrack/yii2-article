@@ -54,6 +54,7 @@ class ArticleBackendController extends \yii\web\Controller
 	public function actionView($id)
 	{
 		$model = $this->findModel($id);
+		$this->checkViewCategoryPermissions($model);
 		$showArticlePreview = Module::getInstance()->enableArticlePreview;
 
 		return $this->render(Module::getInstance()->backendArticleViews['view'], [
@@ -113,6 +114,40 @@ class ArticleBackendController extends \yii\web\Controller
 			throw new NotFoundHttpException($msg);
 		}
 		return $model;
+	}
+
+	/**
+	 * Checks if the current user is allowed to view this article
+	 *
+	 * @param \asinfotrack\yii2\article\models\Article $model
+	 */
+	protected function checkViewCategoryPermissions($model)
+	{
+
+		$allRolesEmpty = true;
+		foreach($model->articleCategories as $articleCategory) {
+			/** @var \asinfotrack\yii2\article\models\ArticleCategory|\creocoder\nestedsets\NestedSetsBehavior $articleCategory */
+
+			$split_char = ';';
+
+			$roles = preg_split($split_char, $articleCategory->editor_item_names);
+			foreach($articleCategory->parents() as $parent) {
+				/** @var \asinfotrack\yii2\article\models\ArticleCategory $parent */
+				$roles[] = preg_split($split_char, $parent->editor_item_names);
+			}
+
+			$allRolesEmpty &= count($roles) == 0;
+
+			foreach ($roles as $role) {
+				if (Yii::$app->user->can($role)) {
+					return true;
+				}
+			}
+		}
+
+		return $allRolesEmpty;
+
+
 	}
 
 }
