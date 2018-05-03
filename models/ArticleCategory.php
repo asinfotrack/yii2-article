@@ -134,6 +134,13 @@ class ArticleCategory extends \yii\db\ActiveRecord
 					$this->addError($attribute, $msg);
 				}
 			}],
+
+			[['editor_callback_class','editor_callback_method'], function($attribute, $params, $validator) {
+				if (!method_exists($this->editor_callback_class, $this->editor_callback_method)) {
+					$msg = Yii::t('app', 'Method {m} does not exist for class {c}',['m'=>$this->editor_callback_method, 'c'=>$this->editor_callback_class]);
+					$this->addError($attribute, $msg);
+				}
+			}]
 		];
 	}
 
