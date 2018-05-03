@@ -70,7 +70,7 @@ class Articles extends \yii\widgets\ListView
 		//use article helper for rendering if no config for list views `itemView` is provided
 		if ($this->itemView === null) {
 			$renderer = Module::getInstance()->renderer;
-			if (!empty($this->articleRendererConfig)) {
+			if (!empty($this->customArticleRendererConfig)) {
 				$renderer = clone $renderer;
 				Yii::configure($renderer, $this->customArticleRendererConfig);
 			}
