@@ -5,6 +5,7 @@ use Yii;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use asinfotrack\yii2\article\Module;
+use yii\web\UnauthorizedHttpException;
 
 /**
  * Controller to manage articles in the backend
@@ -54,7 +55,7 @@ class ArticleBackendController extends \yii\web\Controller
 	public function actionView($id)
 	{
 		$model = $this->findModel($id);
-		$this->checkViewCategoryPermissions($model);
+
 		$showArticlePreview = Module::getInstance()->enableArticlePreview;
 
 		return $this->render(Module::getInstance()->backendArticleViews['view'], [
@@ -67,9 +68,14 @@ class ArticleBackendController extends \yii\web\Controller
 	{
 		$model = Yii::createObject(Module::getInstance()->classMap['articleModel']);
 		$loaded = $model->load(Yii::$app->request->post());
-
-		if ($loaded && $model->save()) {
-			return $this->redirect(['article-backend/view', 'id'=>$model->id]);
+		if ($loaded) {
+			if ($model->save()) {
+				if (!self::checkEditCategoryPermissions($model)) {
+					$model->delete();
+					throw new UnauthorizedHttpException();
+				}
+				return $this->redirect(['article-backend/view', 'id' => $model->id]);
+			}
 		}
 
 		return $this->render(Module::getInstance()->backendArticleViews['create'], [
@@ -80,8 +86,15 @@ class ArticleBackendController extends \yii\web\Controller
 	public function actionUpdate($id)
 	{
 		$model = $this->findModel($id);
+		// check if allowed to edit origin model
+		if (!self::checkEditCategoryPermissions($model)) {
+			throw new UnauthorizedHttpException();
+		}
 		$loaded = $model->load(Yii::$app->request->post());
-
+		// check if allowed to edit new model
+		if (!self::checkEditCategoryPermissions($model)) {
+			throw new UnauthorizedHttpException();
+		}
 		if ($loaded && $model->save()) {
 			return $this->redirect(['article-backend/view', 'id'=>$model->id]);
 		}
@@ -94,6 +107,9 @@ class ArticleBackendController extends \yii\web\Controller
 	public function actionDelete($id)
 	{
 		$model = $this->findModel($id);
+		if (!self::checkEditCategoryPermissions($model)) {
+			throw new UnauthorizedHttpException();
+		}
 		$model->delete();
 
 		return $this->redirect(['article-backend/index']);
@@ -116,27 +132,45 @@ class ArticleBackendController extends \yii\web\Controller
 		return $model;
 	}
 
+
 	/**
-	 * Checks if the current user is allowed to view this article
+	 * Checks if the current user is allowed to edit this article
 	 *
 	 * @param \asinfotrack\yii2\article\models\Article $model
 	 */
-	protected function checkViewCategoryPermissions($model)
+	public static function checkEditCategoryPermissions($model)
 	{
 
 		$allRolesEmpty = true;
 		foreach($model->articleCategories as $articleCategory) {
 			/** @var \asinfotrack\yii2\article\models\ArticleCategory|\creocoder\nestedsets\NestedSetsBehavior $articleCategory */
 
-			$split_char = ';';
+			$categories= $articleCategory->parents()->all();
+			$categories = array_merge($categories, $model->articleCategories);
 
-			$roles = preg_split($split_char, $articleCategory->editor_item_names);
-			foreach($articleCategory->parents() as $parent) {
-				/** @var \asinfotrack\yii2\article\models\ArticleCategory $parent */
-				$roles[] = preg_split($split_char, $parent->editor_item_names);
+			$roles = [];
+
+			$split_char = ',';
+			foreach($categories as $category) {
+				/** @var \asinfotrack\yii2\article\models\ArticleCategory $category */
+
+				// check callback
+				if (!empty($category->editor_callback_class)) {
+					$allRolesEmpty = false;
+					if (call_user_func([$category->editor_callback_class, $category->editor_callback_method])) {
+						return true;
+					}
+				}
+
+				// add roles to array
+				if (null !== $category->editor_item_names) {
+					$roles = array_merge($roles, explode($split_char, $category->editor_item_names));
+				}
 			}
 
-			$allRolesEmpty &= count($roles) == 0;
+			$roles = array_filter($roles, function ($elem) { return (null !== $elem) && ('' !== $elem);});
+
+			$allRolesEmpty &= (count($roles) === 0);
 
 			foreach ($roles as $role) {
 				if (Yii::$app->user->can($role)) {
@@ -146,8 +180,6 @@ class ArticleBackendController extends \yii\web\Controller
 		}
 
 		return $allRolesEmpty;
-
-
 	}
 
 }

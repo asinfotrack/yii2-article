@@ -114,7 +114,7 @@ class ArticleCategory extends \yii\db\ActiveRecord
 			[['title_head'], 'string', 'max'=>70],
 			[['title_internal','title','editor_item_names','editor_callback_class','editor_callback_method'], 'string', 'max'=>255],
 
-			[['editor_item_names'], 'match', 'pattern'=>'/^[\w -_]+(,[\w -_]+)*$/'],
+			[['editor_item_names'], 'match', 'pattern'=>'/^[\w -_]+(,[\w -_]+)*$/'], // , separated
 
 			[['canonical'], 'unique'],
 

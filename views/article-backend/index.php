@@ -1,4 +1,6 @@
 <?php
+
+use asinfotrack\yii2\article\controllers\ArticleBackendController;
 use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -61,6 +63,14 @@ $typeFilter = call_user_func([Module::getInstance()->classMap['articleModel'], '
 		],
 		[
 			'class'=>AdvancedActionColumn::className(),
+			'template'=> function($model) {
+				$buttons = ['{view}'];
+				if (ArticleBackendController::checkEditCategoryPermissions($model)) {
+					$buttons[] = '{update}';
+					$buttons[] = '{delete}';
+				}
+				return implode(' ', $buttons);
+			}
 		],
 	],
 ]); ?>
