@@ -1,5 +1,6 @@
 <?php
 
+use asinfotrack\yii2\toolbox\components\Icon;
 use asinfotrack\yii2\toolbox\widgets\grid\BooleanColumn;
 use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
@@ -100,14 +101,14 @@ $this->title = Yii::t('app', 'Menu items');
 			},
 			'buttons'=>[
 				'up'=>function ($url, $model, $key) {
-					return Html::a(FA::icon('arrow-up'), ['menu-item-backend/move-up', 'id'=>$model->id], [
+					return Html::a(Icon::c('arrow-up'), ['menu-item-backend/move-up', 'id'=>$model->id], [
 						'title'=>Yii::t('app', 'Move up'),
 						'aria-label'=>Yii::t('app', 'Move up'),
 						'data-pjax'=>0,
 					]);
 				},
 				'down'=>function ($url, $model, $key) {
-					return Html::a(FA::icon('arrow-down'), ['menu-item-backend/move-down', 'id'=>$model->id], [
+					return Html::a(Icon::c('arrow-down'), ['menu-item-backend/move-down', 'id'=>$model->id], [
 						'title'=>Yii::t('app', 'Move down'),
 						'aria-label'=>Yii::t('app', 'Move down'),
 						'data-pjax'=>0,

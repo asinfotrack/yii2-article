@@ -92,6 +92,11 @@ accesses the `ArticleRender`. Make sure you use the same module-ID as you use in
 ```
 
 ## Changelog
+
+###### [v0.8.3](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.3)
+- dependency update
+- replaced old usages of fa-icons with generic version
+
 ###### [v0.8.2](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.2)
 - bugfix in articles Widget
 

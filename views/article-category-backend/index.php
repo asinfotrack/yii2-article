@@ -1,9 +1,8 @@
 <?php
-use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use rmrevin\yii\fontawesome\FA;
+use asinfotrack\yii2\toolbox\components\Icon;
 use asinfotrack\yii2\toolbox\widgets\Button;
 use asinfotrack\yii2\toolbox\widgets\grid\AdvancedActionColumn;
 use asinfotrack\yii2\toolbox\widgets\grid\AdvancedDataColumn;
@@ -78,14 +77,14 @@ $this->title = Yii::t('app', 'Article categories');
 			},
 			'buttons'=>[
 				'up'=>function ($url, $model, $key) {
-					return Html::a(FA::icon('arrow-up'), ['article-category-backend/move-up', 'id'=>$model->id], [
+					return Html::a(Icon::c('fas-arrow-up'), ['article-category-backend/move-up', 'id'=>$model->id], [
 						'title'=>Yii::t('app', 'Move up'),
 						'aria-label'=>Yii::t('app', 'Move up'),
 						'data-pjax'=>0,
 					]);
 				},
 				'down'=>function ($url, $model, $key) {
-					return Html::a(FA::icon('arrow-down'), ['article-category-backend/move-down', 'id'=>$model->id], [
+					return Html::a(Icon::c('arrow-down'), ['article-category-backend/move-down', 'id'=>$model->id], [
 						'title'=>Yii::t('app', 'Move down'),
 						'aria-label'=>Yii::t('app', 'Move down'),
 						'data-pjax'=>0,
