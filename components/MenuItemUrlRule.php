@@ -41,16 +41,6 @@ class MenuItemUrlRule implements UrlRuleInterface
 	public $targetArticleCategoryRouteParam = 'id';
 
 	/**
-	 * @var callable a callable that is called when the remaining url after through the article categories is longer than 1
-	 */
-	public $callbackCategoryRestBiggerThanOne = null;
-	/**
-	 * @var callable a callable that si called when after going through the article categories the article could not be found.
-	 */
-	public $callbackCategoryArticleNotFound = null;
-
-
-	/**
 	 * @inheritdoc
 	 */
 	public function parseRequest($manager, $request)

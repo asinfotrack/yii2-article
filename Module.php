@@ -45,15 +45,6 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 
 
 	/**
-	 * @var callable used by the MenuItemUrlRoule
-	 */
-	public $callbackCategoryRestBiggerThanOne = null;
-	/**
-	 * @var callable used by the MenuItemUrlRoule
-	 */
-	public $callbackCategoryArticleNotFound = null;
-
-	/**
 	 * @var array array containing the classes to use for the individual model components.
 	 */
 	public $classMap = [
@@ -321,8 +312,6 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 		$rule->targetArticleRouteParam = $this->articleMenuItemParam;
 		$rule->targetArticleCategoryRoute = $this->articleCategoryMenuItemRoute;
 		$rule->targetArticleCategoryRouteParam = $this->articleCategoryMenuItemParam;
-		$rule->callbackCategoryArticleNotFound = $this->callbackCategoryArticleNotFound;
-		$rule->callbackCategoryRestBiggerThanOne = $this->callbackCategoryRestBiggerThanOne;
 
 		Yii::$app->urlManager->addRules([$rule], false);
 	}
