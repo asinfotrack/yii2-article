@@ -2,6 +2,7 @@
 namespace asinfotrack\yii2\article\components;
 
 use yii\helpers\Json;
+use yii\jui\Menu;
 use yii\web\UrlRuleInterface;
 use asinfotrack\yii2\article\models\MenuItem;
 

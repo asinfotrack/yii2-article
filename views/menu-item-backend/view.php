@@ -72,6 +72,12 @@ $this->title = Yii::t('app', $model->scenario !== MenuItem::SCENARIO_MENU ? 'Men
 			'value'=>$model->article_id === null ? null : Html::a($model->article->title, ['article-backend/view', 'id'=>$model->article_id]),
 		],
 		[
+			'attribute'=>'article_category_id',
+			'visible'=>$model->type === MenuItem::TYPE_ARTICLE_CATEGORY,
+			'format'=>'html',
+			'value'=>$model->article_category_id === null ? null : Html::a($model->articleCategory->title, ['article-category-backend/view', 'id'=>$model->article_category_id]),
+		],
+		[
 			'attribute'=>'route',
 			'visible'=>$model->type === MenuItem::TYPE_ROUTE,
 		],
