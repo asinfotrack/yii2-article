@@ -1,5 +1,6 @@
 <?php
 
+use app\models\ArticleCategory;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
@@ -27,6 +28,7 @@ $form = ActiveForm::begin([
 $typeData = call_user_func([Module::getInstance()->classMap['menuItemModel'], 'typeFilter']);
 $stateData = call_user_func([Module::getInstance()->classMap['menuItemModel'], 'stateFilter']);
 $articleData = ArrayHelper::map(Article::find()->type([Article::TYPE_ARTICLE, Article::TYPE_UNDEFINED])->all(), 'id', 'title');
+$articleCategoryData = ArrayHelper::map(ArticleCategory::find()->all(), 'id', 'title');
 ?>
 
 <?= $form->errorSummary($model); ?>
@@ -41,7 +43,7 @@ $articleData = ArrayHelper::map(Article::find()->type([Article::TYPE_ARTICLE, Ar
 	<?php endif; ?>
 </fieldset>
 
-<fieldset data-types="<?= Json::encode([MenuItem::TYPE_ARTICLE, MenuItem::TYPE_ROUTE]) ?>">
+<fieldset data-types="<?= Json::encode([MenuItem::TYPE_ARTICLE, MenuItem::TYPE_ROUTE, MenuItem::TYPE_ARTICLE_CATEGORY]) ?>">
 	<legend><?= Yii::t('app', 'URL configuration') ?></legend>
 	<?= $form->field($model, 'path_info')->textInput(['maxlength'=>true]) ?>
 </fieldset>
@@ -60,7 +62,10 @@ $articleData = ArrayHelper::map(Article::find()->type([Article::TYPE_ARTICLE, Ar
 		<legend><?= Yii::t('app', 'URL target') ?></legend>
 		<?= $form->field($model, 'url')->textInput(['maxlength'=>true]) ?>
 	</fieldset>
-
+	<fieldset data-types="<?= Json::encode([MenuItem::TYPE_ARTICLE_CATEGORY]) ?>">
+		<legend><?= Yii::t('app', 'Article category target') ?></legend>
+		<?= $form->field($model, 'article_category_id')->dropDownList($articleCategoryData, ['prompt'=>Yii::t('app', 'Choose an article category')]) ?>
+	</fieldset>
 	<fieldset>
 		<legend><?= Yii::t('app', 'Settings') ?></legend>
 		<?= $form->field($model, 'state')->dropDownList($stateData, ['prompt'=>Yii::t('app', 'Choose a state')]) ?>

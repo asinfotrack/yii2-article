@@ -2,6 +2,7 @@
 namespace asinfotrack\yii2\article\models\query;
 
 use asinfotrack\yii2\article\models\Article;
+use asinfotrack\yii2\article\models\ArticleCategory;
 use creocoder\nestedsets\NestedSetsQueryBehavior;
 
 /**
@@ -99,6 +100,21 @@ class MenuItemQuery extends \yii\db\ActiveQuery
 		if (!is_numeric($article)) $id = Article::findOne($article)->id;
 
 		$this->andWhere(['menu_item.article_id'=>$id]);
+		return $this;
+	}
+
+	/**
+	 * Named scope to filter menu items by their assigned article category
+	 *
+	 * @param int|string|\asinfotrack\yii2\article\models\ArticleCategory $articleCategory the article category, its id or canonical
+	 * @return \asinfotrack\yii2\article\models\query\MenuItemQuery $this self for chaining
+	 */
+	public function articleCategory($articleCategory)
+	{
+		$id = $articleCategory instanceof ArticleCategory ? $articleCategory->id : $articleCategory;
+		if (!is_numeric($articleCategory)) $id = ArticleCategory::findOne($articleCategory)->id;
+
+		$this->andWhere(['menu_item.article_category_id'=>$id]);
 		return $this;
 	}
 
