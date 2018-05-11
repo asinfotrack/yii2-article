@@ -40,6 +40,15 @@ class MenuItemUrlRule implements UrlRuleInterface
 	 */
 	public $targetArticleCategoryRouteParam = 'id';
 
+	/**
+	 * @var callable a callable that is called when the remaining url after through the article categories is longer than 1
+	 */
+	public $callbackCategoryRestBiggerThanOne = null;
+	/**
+	 * @var callable a callable that si called when after going through the article categories the article could not be found.
+	 */
+	public $callbackCategoryArticleNotFound = null;
+
 
 	/**
 	 * @inheritdoc
@@ -54,12 +63,8 @@ class MenuItemUrlRule implements UrlRuleInterface
 			->pathInfo($request->pathInfo)
 			->one();
 
-
-
 		if ($menuItem === null) {
-			// try find a category
-			// split auf slash & verbinden
-
+			// try to find a category
 			$pathInfoParts = explode('/', $request->pathInfo);
 			$found = false;
 			$indexFound = 0;
@@ -72,8 +77,10 @@ class MenuItemUrlRule implements UrlRuleInterface
 				$found = $menuItem !== null;
 				$indexFound = $i;
 			}
+
 			// now we know, we're in an article category
 			if ($found) {
+				$articleCategory = $menuItem->articleCategory;
 				$rest = array_slice($pathInfoParts, $indexFound);
 				$end = false;
 				while(count($rest) > 0 && !$end) {
@@ -93,10 +100,23 @@ class MenuItemUrlRule implements UrlRuleInterface
 				// after a category, one step deeper can only be one article
 				if (count($rest) > 1)
 				{
-					return false;
+					if ($this->callbackCategoryRestBiggerThanOne === null) {
+						return false;
+					} else {
+						return call_user_func($this->callbackCategoryRestBiggerThanOne, $articleCategory, $rest);
+					}
 				}
 				$article = Article::findOne(['canonical'=>$rest[0]]);
-				return [$this->targetArticleRoute, [$this->targetArticleRouteParam=>$article->id]];
+				if ($article !== null) {
+					return [$this->targetArticleRoute, [$this->targetArticleRouteParam => $article->id]];
+				} else {
+					// no article found under this url
+					if ($this->callbackCategoryArticleNotFound === null) {
+						return false;
+					} else {
+						return call_user_func($this->callbackCategoryArticleNotFound,$articleCategory, $rest[0]);
+					}
+				}
 
 			}
 		}
