@@ -3,6 +3,7 @@ namespace asinfotrack\yii2\article\controllers;
 
 use asinfotrack\yii2\article\components\ArticleAction;
 use asinfotrack\yii2\article\models\ArticleCategory;
+use yii\base\Module;
 
 class ArticleCategoryController extends \yii\web\Controller
 {

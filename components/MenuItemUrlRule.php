@@ -1,6 +1,8 @@
 <?php
 namespace asinfotrack\yii2\article\components;
 
+use asinfotrack\yii2\article\models\Article;
+use asinfotrack\yii2\article\models\ArticleCategory;
 use yii\helpers\Json;
 use yii\jui\Menu;
 use yii\web\UrlRuleInterface;
@@ -52,9 +54,54 @@ class MenuItemUrlRule implements UrlRuleInterface
 			->pathInfo($request->pathInfo)
 			->one();
 
+
+
+		if ($menuItem === null) {
+			// try find a category
+			// split auf slash & verbinden
+
+			$pathInfoParts = explode('/', $request->pathInfo);
+			$found = false;
+			$indexFound = 0;
+			for ($i = 1; $i <= count($pathInfoParts) && $found === false; ++$i){
+				$partialPathInfo = implode('/',array_slice($pathInfoParts,0,$i,true));
+				$menuItem = MenuItem::find()
+					->types([MenuItem::TYPE_ARTICLE_CATEGORY])
+					->pathInfo($partialPathInfo)
+					->one();
+				$found = $menuItem !== null;
+				$indexFound = $i;
+			}
+			// now we know, we're in an article category
+			if ($found) {
+				$rest = array_slice($pathInfoParts, $indexFound);
+				$end = false;
+				while(count($rest) > 0 && !$end) {
+					$temp = ArticleCategory::findOne(['canonical' => $rest[0]]);
+					$end = $temp === null;
+					if (!$end) {
+						$articleCategory = $temp;
+						array_shift($rest);
+						$route = [$this->targetArticleCategoryRoute, [$this->targetArticleCategoryRouteParam=>$articleCategory->id]];
+					}
+				}
+				// if there is no article referenced
+				if (count($rest) === 0) {
+					return $route;
+				}
+
+				// after a category, one step deeper can only be one article
+				if (count($rest) > 1)
+				{
+					return false;
+				}
+				$article = Article::findOne(['canonical'=>$rest[0]]);
+				return [$this->targetArticleRoute, [$this->targetArticleRouteParam=>$article->id]];
+
+			}
+		}
 		//no match means request is not handled by this rule
 		if ($menuItem === null) return false;
-
 		//handle the request with the proper route
 		if ($menuItem->type === MenuItem::TYPE_ARTICLE) {
 			$route = [$this->targetArticleRoute, [$this->targetArticleRouteParam=>$menuItem->article_id]];
