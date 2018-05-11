@@ -63,65 +63,9 @@ class MenuItemUrlRule implements UrlRuleInterface
 			->pathInfo($request->pathInfo)
 			->one();
 
-		if ($menuItem === null) {
-			// try to find a category
-			$pathInfoParts = explode('/', $request->pathInfo);
-			$found = false;
-			$indexFound = 0;
-			for ($i = 1; $i <= count($pathInfoParts) && $found === false; ++$i){
-				$partialPathInfo = implode('/',array_slice($pathInfoParts,0,$i,true));
-				$menuItem = MenuItem::find()
-					->types([MenuItem::TYPE_ARTICLE_CATEGORY])
-					->pathInfo($partialPathInfo)
-					->one();
-				$found = $menuItem !== null;
-				$indexFound = $i;
-			}
-
-			// now we know, we're in an article category
-			if ($found) {
-				$articleCategory = $menuItem->articleCategory;
-				$rest = array_slice($pathInfoParts, $indexFound);
-				$end = false;
-				while(count($rest) > 0 && !$end) {
-					$temp = ArticleCategory::findOne(['canonical' => $rest[0]]);
-					$end = $temp === null;
-					if (!$end) {
-						$articleCategory = $temp;
-						array_shift($rest);
-						$route = [$this->targetArticleCategoryRoute, [$this->targetArticleCategoryRouteParam=>$articleCategory->id]];
-					}
-				}
-				// if there is no article referenced
-				if (count($rest) === 0) {
-					return $route;
-				}
-
-				// after a category, one step deeper can only be one article
-				if (count($rest) > 1)
-				{
-					if ($this->callbackCategoryRestBiggerThanOne === null) {
-						return false;
-					} else {
-						return call_user_func($this->callbackCategoryRestBiggerThanOne, $articleCategory, $rest);
-					}
-				}
-				$article = Article::findOne(['canonical'=>$rest[0]]);
-				if ($article !== null) {
-					return [$this->targetArticleRoute, [$this->targetArticleRouteParam => $article->id]];
-				} else {
-					// no article found under this url
-					if ($this->callbackCategoryArticleNotFound === null) {
-						return false;
-					} else {
-						return call_user_func($this->callbackCategoryArticleNotFound,$articleCategory, $rest[0]);
-					}
-				}
-
-			}
-		}
 		//no match means request is not handled by this rule
 		if ($menuItem === null) return false;
+
 		//handle the request with the proper route
 		if ($menuItem->type === MenuItem::TYPE_ARTICLE) {
 			$route = [$this->targetArticleRoute, [$this->targetArticleRouteParam=>$menuItem->article_id]];
@@ -141,7 +85,6 @@ class MenuItemUrlRule implements UrlRuleInterface
 	public function createUrl($manager, $route, $params)
 	{
 		/* @var $menuItem \asinfotrack\yii2\article\models\MenuItem */
-
 		// try matching article category menu item
 		if ($route === $this->targetArticleCategoryRoute && isset($params[$this->targetArticleCategoryRouteParam])) {
 			$menuItem = MenuItem::find()->types(MenuItem::TYPE_ARTICLE_CATEGORY)->articleCategory($params[$this->targetArticleCategoryRouteParam])->one();
