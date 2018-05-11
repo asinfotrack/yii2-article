@@ -132,7 +132,7 @@ class MenuItem extends \yii\db\ActiveRecord
 			[['visible_item_names'], 'match', 'pattern'=>'/^[\w -_]+(,[\w -_]+)*$/'],
 
 			[['path_info'], 'required', 'when'=>function ($model) {
-				return in_array(intval($model->type), [self::TYPE_ARTICLE, self::TYPE_ROUTE]);
+				return in_array(intval($model->type), [self::TYPE_ARTICLE, self::TYPE_ROUTE, self::TYPE_ARTICLE_CATEGORY]);
 			}],
 			[['path_info'], function ($attribute, $params) {
 				$tree = MenuItem::findOne($this->parentId)->tree;
@@ -314,7 +314,7 @@ class MenuItem extends \yii\db\ActiveRecord
 		}
 
 		$type = intval($this->type);
-		if (!in_array($type, [self::TYPE_ARTICLE, self::TYPE_ROUTE])) $this->path_info = null;
+		if (!in_array($type, [self::TYPE_ARTICLE, self::TYPE_ROUTE, self::TYPE_ARTICLE_CATEGORY])) $this->path_info = null;
 		if ($type !== self::TYPE_ARTICLE) $this->article_id = null;
 		if ($type !== self::TYPE_ARTICLE_CATEGORY) $this->article_category_id = null;
 		if ($type !== self::TYPE_ROUTE) {

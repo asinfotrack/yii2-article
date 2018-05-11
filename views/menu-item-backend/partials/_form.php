@@ -43,7 +43,7 @@ $articleCategoryData = ArrayHelper::map(ArticleCategory::find()->all(), 'id', 't
 	<?php endif; ?>
 </fieldset>
 
-<fieldset data-types="<?= Json::encode([MenuItem::TYPE_ARTICLE, MenuItem::TYPE_ROUTE]) ?>">
+<fieldset data-types="<?= Json::encode([MenuItem::TYPE_ARTICLE, MenuItem::TYPE_ROUTE, MenuItem::TYPE_ARTICLE_CATEGORY]) ?>">
 	<legend><?= Yii::t('app', 'URL configuration') ?></legend>
 	<?= $form->field($model, 'path_info')->textInput(['maxlength'=>true]) ?>
 </fieldset>

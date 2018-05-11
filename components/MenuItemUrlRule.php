@@ -28,6 +28,18 @@ class MenuItemUrlRule implements UrlRuleInterface
 	public $targetArticleRouteParam = 'id';
 
 	/**
+	 * @var string holds the target route which handles article category links
+	 */
+	public $targetArticleCategoryRoute;
+
+	/**
+	 * @var string the param name of the action which holds the id or the canonical of
+	 * the article category to render
+	 */
+	public $targetArticleCategoryRouteParam = 'id';
+
+
+	/**
 	 * @inheritdoc
 	 */
 	public function parseRequest($manager, $request)
@@ -36,7 +48,7 @@ class MenuItemUrlRule implements UrlRuleInterface
 
 		//try to find a menu item with the current path info
 		$menuItem = MenuItem::find()
-			->types([MenuItem::TYPE_ARTICLE, MenuItem::TYPE_ROUTE])
+			->types([MenuItem::TYPE_ARTICLE, MenuItem::TYPE_ROUTE, MenuItem::TYPE_ARTICLE_CATEGORY])
 			->pathInfo($request->pathInfo)
 			->one();
 
@@ -46,6 +58,8 @@ class MenuItemUrlRule implements UrlRuleInterface
 		//handle the request with the proper route
 		if ($menuItem->type === MenuItem::TYPE_ARTICLE) {
 			$route = [$this->targetArticleRoute, [$this->targetArticleRouteParam=>$menuItem->article_id]];
+		} else if ($menuItem->type === MenuItem::TYPE_ARTICLE_CATEGORY) {
+			$route = [$this->targetArticleCategoryRoute, [$this->targetArticleCategoryRouteParam=>$menuItem->article_category_id]];
 		} else {
 			$params = $menuItem->route_params !== null ? Json::decode($menuItem->route_params) : [];
 			$route = [$menuItem->route, $params];
@@ -60,6 +74,12 @@ class MenuItemUrlRule implements UrlRuleInterface
 	public function createUrl($manager, $route, $params)
 	{
 		/* @var $menuItem \asinfotrack\yii2\article\models\MenuItem */
+
+		// try matching article category menu item
+		if ($route === $this->targetArticleCategoryRoute && isset($params[$this->targetArticleCategoryRouteParam])) {
+			$menuItem = MenuItem::find()->types(MenuItem::TYPE_ARTICLE_CATEGORY)->articleCategory($params[$this->targetArticleCategoryRouteParam])->one();
+			if ($menuItem !== null) return $menuItem->path_info;
+		}
 
 		//try matching an article menu item
 		if ($route === $this->targetArticleRoute && isset($params[$this->targetArticleRouteParam])) {
