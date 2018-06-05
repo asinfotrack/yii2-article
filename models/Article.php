@@ -281,7 +281,7 @@ class Article extends \yii\db\ActiveRecord
 		$oldCatIds = ArrayHelper::getColumn($oldCats, 'id');
 		foreach ($oldCats as $cat) {
 			if (!in_array($cat->id, $this->categoryIds)) {
-				$this->unlink('articleCategories', $cat);
+				$this->unlink('articleCategories', $cat, true);
 			}
 		}
 
