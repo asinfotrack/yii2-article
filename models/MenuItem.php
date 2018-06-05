@@ -33,6 +33,7 @@ use yii\validators\UniqueValidator;
  * @property bool $is_new_tab
  * @property string $path_info
  * @property integer $article_id
+ * @property integer $article_category_id
  * @property string $route
  * @property string $route_params
  * @property string $url
@@ -50,6 +51,7 @@ use yii\validators\UniqueValidator;
  * @property string $treeLabel
  *
  * @property \asinfotrack\yii2\article\models\Article $article
+ * @property \asinfotrack\yii2\article\models\ArticleCategory $articleCategory
  */
 class MenuItem extends \yii\db\ActiveRecord
 {
@@ -59,9 +61,10 @@ class MenuItem extends \yii\db\ActiveRecord
 	public const TYPE_ARTICLE = 1;
 	public const TYPE_ROUTE = 2;
 	public const TYPE_URL = 3;
+	public const TYPE_ARTICLE_CATEGORY = 4;
 	public const TYPE_NO_LINK = 10;
 
-	public static $ALL_TYPES = [self::TYPE_ARTICLE, self::TYPE_ROUTE, self::TYPE_URL, self::TYPE_NO_LINK];
+	public static $ALL_TYPES = [self::TYPE_ARTICLE, self::TYPE_ROUTE, self::TYPE_URL, self::TYPE_ARTICLE_CATEGORY, self::TYPE_NO_LINK];
 
 	public const STATE_PUBLISHED = 10;
 	public const STATE_PUBLISHED_HIDDEN = 20;
@@ -129,7 +132,7 @@ class MenuItem extends \yii\db\ActiveRecord
 			[['visible_item_names'], 'match', 'pattern'=>'/^[\w -_]+(,[\w -_]+)*$/'],
 
 			[['path_info'], 'required', 'when'=>function ($model) {
-				return in_array(intval($model->type), [self::TYPE_ARTICLE, self::TYPE_ROUTE]);
+				return in_array(intval($model->type), [self::TYPE_ARTICLE, self::TYPE_ROUTE, self::TYPE_ARTICLE_CATEGORY]);
 			}],
 			[['path_info'], function ($attribute, $params) {
 				$tree = MenuItem::findOne($this->parentId)->tree;
@@ -163,9 +166,13 @@ class MenuItem extends \yii\db\ActiveRecord
 			[['article_id'], 'integer'],
 			[['article_id'], 'exist', 'targetClass'=>Article::class, 'targetAttribute'=>'id'],
 
+			[['article_category_id'], 'required', 'when'=>function ($model) { return intval($model->type) === self::TYPE_ARTICLE_CATEGORY; }],
+			[['article_category_id'], 'integer'],
+			[['article_category_id'], 'exist', 'targetClass'=>ArticleCategory::class, 'targetAttribute'=>'id'],
+
 			[['route'], 'required', 'when'=>function ($model) { return intval($model->type) === self::TYPE_ROUTE; }],
 			[['route'], 'string', 'max'=>255],
-			[['route'], 'match', 'pattern'=>'/^\/?([\w-]+\/?){1,}(\?.*)?$/', 'when'=>function ($model) { return $model->type = self::TYPE_ROUTE; }],
+			[['route'], 'match', 'pattern'=>'/^\/?([\w-]+\/?){1,}(\?.*)?$/', 'when'=>function ($model) { return $model->type === self::TYPE_ROUTE; }],
 			[['route_params'], 'string'],
 			[['route_params'], function ($attribute, $params) {
 				if (empty($this->{$attribute})) return;
@@ -214,6 +221,7 @@ class MenuItem extends \yii\db\ActiveRecord
 			'is_new_tab'=>Yii::t('app', 'New tab'),
 			'path_info'=>Yii::t('app', 'Path info'),
 			'article_id'=>Yii::t('app', 'Article'),
+			'article_category_id'=>Yii::t('app', 'Article category'),
 			'route'=>Yii::t('app', 'Route'),
 			'route_params'=>Yii::t('app', 'Route-Params'),
 			'url'=>Yii::t('app', 'URL'),
@@ -306,8 +314,9 @@ class MenuItem extends \yii\db\ActiveRecord
 		}
 
 		$type = intval($this->type);
-		if (!in_array($type, [self::TYPE_ARTICLE, self::TYPE_ROUTE])) $this->path_info = null;
+		if (!in_array($type, [self::TYPE_ARTICLE, self::TYPE_ROUTE, self::TYPE_ARTICLE_CATEGORY])) $this->path_info = null;
 		if ($type !== self::TYPE_ARTICLE) $this->article_id = null;
+		if ($type !== self::TYPE_ARTICLE_CATEGORY) $this->article_category_id = null;
 		if ($type !== self::TYPE_ROUTE) {
 			$this->route = null;
 			$this->route_params = null;
@@ -386,6 +395,14 @@ class MenuItem extends \yii\db\ActiveRecord
 	}
 
 	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getArticleCategory()
+	{
+		return $this->hasOne(ArticleCategory::class, ['id'=>'article_category_id']);
+	}
+
+	/**
 	 * Returns the user who created the instance. This relation only works when
 	 * `userRelationCallback` is properly configured within the module config.
 	 *
@@ -432,6 +449,7 @@ class MenuItem extends \yii\db\ActiveRecord
 			self::TYPE_ARTICLE=>Yii::t('app', 'Article'),
 			self::TYPE_ROUTE=>Yii::t('app', 'Internal route'),
 			self::TYPE_URL=>Yii::t('app', 'Fixed url'),
+			self::TYPE_ARTICLE_CATEGORY=>Yii::t('app', 'Article category'),
 			self::TYPE_NO_LINK=>Yii::t('app', 'No link / Label'),
 		];
 	}
@@ -463,6 +481,9 @@ class MenuItem extends \yii\db\ActiveRecord
 			return false;
 		}
 		if ($itemA->article_id !== $itemB->article_id) {
+			return false;
+		}
+		if ($itemA->article_category_id !== $itemB->article_category_id) {
 			return false;
 		}
 		if ($itemA->route !== $itemB->route) {

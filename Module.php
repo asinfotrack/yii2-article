@@ -31,6 +31,19 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 	 */
 	public $articleMenuItemParam = 'id';
 
+
+	/**
+	 * @var array the route for article rendering when a menu item has an article id
+	 * as its target.
+	 */
+	public $articleCategoryMenuItemRoute = 'article/article-category/render';
+
+	/**
+	 * @var string the name of the action param when rendering articles
+	 */
+	public $articleCategoryMenuItemParam = 'id';
+
+
 	/**
 	 * @var array array containing the classes to use for the individual model components.
 	 */
@@ -297,6 +310,8 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 		$rule = new MenuItemUrlRule();
 		$rule->targetArticleRoute = $this->articleMenuItemRoute;
 		$rule->targetArticleRouteParam = $this->articleMenuItemParam;
+		$rule->targetArticleCategoryRoute = $this->articleCategoryMenuItemRoute;
+		$rule->targetArticleCategoryRouteParam = $this->articleCategoryMenuItemParam;
 
 		Yii::$app->urlManager->addRules([$rule], false);
 	}

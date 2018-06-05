@@ -64,6 +64,15 @@ class ArticleCategoryAction extends \yii\web\ViewAction
 	 */
 	public function init()
 	{
+		$queryParam = Module::getInstance()->articleCategoryMenuItemParam;
+
+		if ($this->articleCategories === null && Yii::$app->request->getQueryParam($queryParam) !== null) {
+			$this->articleCategories = static::findArticleCategoryByIdOrCanonical(Yii::$app->request->getQueryParam($queryParam));
+		} else if (!($this->articleCategories instanceof ArticleCategory)) {
+			$this->articleCategories = static::findArticleCategoryByIdOrCanonical($this->articleCategories);
+		}
+
+
 		//assert categories are set
 		if (empty($this->articleCategories)) {
 			throw new InvalidConfigException($msg = Yii::t('app', 'Article category must be set'));
@@ -87,17 +96,23 @@ class ArticleCategoryAction extends \yii\web\ViewAction
 	 */
 	protected function render($viewName)
 	{
+
 		//TODO: finish widget config with overwriting items property
 		$query = call_user_func([Module::getInstance()->classMap['articleModel'], 'find']);
 		$query = $query->articleCategories($this->articleCategories)->orderPublishedAt();
 		if ($this->publishedOnly) $query->published(true);
 		$this->widgetConfig['items'] = $query;
 
+		if (is_array($this->articleCategories) && count($this->articleCategories) <= 1) {
+			$model = self::findArticleCategoryByIdOrCanonical($this->articleCategories);
+		}
+
 		return $this->controller->render($viewName, [
 			'title'=>$this->title,
 			'metaTitle'=>$this->metaTitle,
 			'query'=>$query,
 			'widgetConfig'=>$this->widgetConfig,
+			'model'=>$model,
 		]);
 	}
 
@@ -113,4 +128,15 @@ class ArticleCategoryAction extends \yii\web\ViewAction
 		throw new NotFoundHttpException($msg);
 	}
 
+
+	/**
+	 * Tries to find an article category by its id or canonical
+	 *
+	 * @param string|int $idOrCanonical either an article categories id or canonical
+	 * @return \asinfotrack\yii2\article\models\ArticleCategory|null either the article category model or null if not found
+	 */
+	protected static function findArticleCategoryByIdOrCanonical($idOrCanonical)
+	{
+		return call_user_func([Module::getInstance()->classMap['articleCategoryModel'], 'findOne'], $idOrCanonical);
+	}
 }

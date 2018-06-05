@@ -92,6 +92,8 @@ accesses the `ArticleRender`. Make sure you use the same module-ID as you use in
 ```
 
 ## Changelog
+###### [v0.8.4](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.4)
+- Extended MenuItem to handle article categories
 
 ###### [v0.8.3](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.3)
 - dependency update

@@ -54,8 +54,10 @@ class ArticleAction extends \yii\web\ViewAction
 	public function init()
 	{
 		//try to find article if not set already
-		if ($this->article === null && Yii::$app->request->getQueryParam('id') !== null) {
-			$this->article = static::findArticleByIdOrCanonical(Yii::$app->request->getQueryParam('id'));
+		$queryParam = Module::getInstance()->articleMenuItemParam;
+
+		if ($this->article === null && Yii::$app->request->getQueryParam($queryParam) !== null) {
+			$this->article = static::findArticleByIdOrCanonical(Yii::$app->request->getQueryParam($queryParam));
 		} else if (!($this->article instanceof Article)) {
 			$this->article = static::findArticleByIdOrCanonical($this->article);
 		}

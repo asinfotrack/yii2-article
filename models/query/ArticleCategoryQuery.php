@@ -65,5 +65,4 @@ class ArticleCategoryQuery extends \yii\db\ActiveQuery
 		$this->andWhere(['NOT', ['article_category.id'=>1]]);
 		return $this;
 	}
-
 }
