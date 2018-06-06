@@ -61,7 +61,7 @@ $this->title = Yii::t('app', 'Menu items');
 			},
 		],
 		[
-			'class'=>AdvancedDataColumn::className(),
+			'class'=>AdvancedDataColumn::class,
 			'attribute'=>'type',
 			'filter'=>$typeFilter,
 			'columnWidth'=>10,
@@ -71,7 +71,16 @@ $this->title = Yii::t('app', 'Menu items');
 			},
 		],
 		[
-			'class'=>AdvancedDataColumn::className(),
+			'class'=>AdvancedDataColumn::class,
+			'attribute'=>'path_info',
+			'enableSorting'=>false,
+			'format'=>'html',
+			'value'=>function ($model, $key, $index, $column) use ($typeFilter) {
+				return $model->path_info === null ? null : Html::tag('code', $model->path_info);
+			},
+		],
+		[
+			'class'=>AdvancedDataColumn::class,
 			'attribute'=>'label',
 			'enableSorting'=>false,
 			'value'=>function ($model, $key, $index, $column) use ($typeFilter) {
@@ -79,7 +88,7 @@ $this->title = Yii::t('app', 'Menu items');
 			},
 		],
 		[
-			'class'=>AdvancedDataColumn::className(),
+			'class'=>AdvancedDataColumn::class,
 			'attribute'=>'state',
 			'filter'=>$stateFilter,
 			'columnWidth'=>15,
@@ -89,7 +98,7 @@ $this->title = Yii::t('app', 'Menu items');
 			},
 		],
 		[
-			'class'=>AdvancedActionColumn::className(),
+			'class'=>AdvancedActionColumn::class,
 			'header'=>Yii::t('app', 'Order'),
 			'template'=>function ($model, $key, $index) {
 				/* @var $model \asinfotrack\yii2\article\models\ArticleCategory|\creocoder\nestedsets\NestedSetsBehavior */
@@ -117,7 +126,7 @@ $this->title = Yii::t('app', 'Menu items');
 			],
 		],
 		[
-			'class'=>AdvancedActionColumn::className(),
+			'class'=>AdvancedActionColumn::class,
 		],
 	],
 ]); ?>
