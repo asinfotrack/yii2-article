@@ -181,6 +181,10 @@ class MenuItemHelper
 				$itemArr['visible'] = call_user_func([$model->visible_callback_class, $model->visible_callback_method], $model);
 			}
 		}
+		
+		if ($model->is_new_tab) {
+			$itemArr['itemOptions'] = ['target'=>'_blank'];
+		}
 
 		//render children
 		$children = static::getChildrenForItem($model);
