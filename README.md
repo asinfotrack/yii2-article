@@ -92,6 +92,10 @@ accesses the `ArticleRender`. Make sure you use the same module-ID as you use in
 ```
 
 ## Changelog
+
+###### [v0.8.5](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.5)
+- Bugfix in MenuItem model in route validation
+
 ###### [v0.8.4](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.4)
 - Extended MenuItem to handle article categories
 
