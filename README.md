@@ -95,6 +95,7 @@ accesses the `ArticleRender`. Make sure you use the same module-ID as you use in
 
 ###### [v0.8.5](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.5)
 - Bugfix in MenuItem model in route validation
+- Added support for is_new_tab in MenuItem
 
 ###### [v0.8.4](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.4)
 - Extended MenuItem to handle article categories
