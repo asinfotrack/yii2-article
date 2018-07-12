@@ -172,7 +172,7 @@ class MenuItem extends \yii\db\ActiveRecord
 
 			[['route'], 'required', 'when'=>function ($model) { return intval($model->type) === self::TYPE_ROUTE; }],
 			[['route'], 'string', 'max'=>255],
-			[['route'], 'match', 'pattern'=>'/^\/?([\w-]+\/?){1,}(\?.*)?$/', 'when'=>function ($model) { return $model->type === self::TYPE_ROUTE; }],
+			[['route'], 'match', 'pattern'=>'/^([\w-]+\/?){1,}(\?.*)?$/', 'when'=>function ($model) { return $model->type === self::TYPE_ROUTE; }],
 			[['route_params'], 'string'],
 			[['route_params'], function ($attribute, $params) {
 				if (empty($this->{$attribute})) return;
