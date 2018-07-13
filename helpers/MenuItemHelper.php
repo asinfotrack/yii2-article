@@ -143,12 +143,11 @@ class MenuItemHelper
 				break;
 			case MenuItem::TYPE_ARTICLE:
 				$module = Module::getInstance();
-				$module->id = '';
-				$itemArr['url'] = Url::to([$module->articleMenuItemRoute, $module->articleMenuItemParam=>$model->article_id]);
+				$itemArr['url'] = Url::to(['/' . $module->articleMenuItemRoute, $module->articleMenuItemParam=>$model->article_id]);
 				break;
 			case MenuItem::TYPE_ARTICLE_CATEGORY:
 				$module = Module::getInstance();
-				$itemArr['url'] = Url::to([$module->articleCategoryMenuItemRoute, $module->articleCategoryMenuItemParam=>$model->article_category_id]);
+				$itemArr['url'] = Url::to(['/' . $module->articleCategoryMenuItemRoute, $module->articleCategoryMenuItemParam=>$model->article_category_id]);
 				break;
 			case MenuItem::TYPE_NO_LINK:
 				break;
