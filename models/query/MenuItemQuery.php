@@ -112,7 +112,7 @@ class MenuItemQuery extends \yii\db\ActiveQuery
 	public function articleCategory($articleCategory)
 	{
 		$id = $articleCategory instanceof ArticleCategory ? $articleCategory->id : $articleCategory;
-		if (!is_numeric($articleCategory)) $id = ArticleCategory::findOne($articleCategory)->id;
+		if (!is_numeric($id)) $id = ArticleCategory::findOne($articleCategory)->id;
 
 		$this->andWhere(['menu_item.article_category_id'=>$id]);
 		return $this;
