@@ -136,7 +136,8 @@ class ArticleBackendController extends \yii\web\Controller
 	/**
 	 * Checks if the current user is allowed to edit this article
 	 *
-	 * @param \asinfotrack\yii2\article\models\Article $model
+	 * @param \yii\db\ActiveRecord $model
+	 * @return bool
 	 */
 	public static function checkEditCategoryPermissions($model)
 	{
