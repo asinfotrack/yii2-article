@@ -1,11 +1,11 @@
 <?php
 
+use asinfotrack\yii2\article\helpers\ArticleCategoryHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
 use asinfotrack\yii2\article\Module;
 use asinfotrack\yii2\toolbox\widgets\Button;
-use asinfotrack\yii2\article\controllers\ArticleBackendController;
 
 /* @var $this \yii\web\View */
 /* @var $model \asinfotrack\yii2\article\models\Article */
@@ -33,7 +33,7 @@ if (count($model->articleCategories) > 0) {
 			'class'=>'btn btn-primary',
 		],
 	]) ?>
-	<?php if (ArticleBackendController::checkEditCategoryPermissions($model)): ?>
+	<?php if (ArticleCategoryHelper::checkEditCategoryPermissions($model)): ?>
 		<?= Button::widget([
 			'tagName'=>'a',
 			'icon'=>'pencil',

@@ -4,8 +4,9 @@ namespace asinfotrack\yii2\article\controllers;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
-use asinfotrack\yii2\article\Module;
 use yii\web\UnauthorizedHttpException;
+use asinfotrack\yii2\article\Module;
+use asinfotrack\yii2\article\helpers\ArticleCategoryHelper;
 
 /**
  * Controller to manage articles in the backend
@@ -25,7 +26,7 @@ class ArticleBackendController extends \yii\web\Controller
 		//default filters
 		$behaviors = [
 			'verbs'=>[
-				'class'=>VerbFilter::className(),
+				'class'=>VerbFilter::class,
 				'actions'=>[
 					'delete'=>['post'],
 				],
@@ -70,7 +71,7 @@ class ArticleBackendController extends \yii\web\Controller
 		$loaded = $model->load(Yii::$app->request->post());
 		if ($loaded) {
 			if ($model->save()) {
-				if (!self::checkEditCategoryPermissions($model)) {
+				if (!ArticleCategoryHelper::checkEditCategoryPermissions($model)) {
 					$model->delete();
 					throw new UnauthorizedHttpException();
 				}
@@ -87,12 +88,12 @@ class ArticleBackendController extends \yii\web\Controller
 	{
 		$model = $this->findModel($id);
 		// check if allowed to edit origin model
-		if (!self::checkEditCategoryPermissions($model)) {
+		if (!ArticleCategoryHelper::checkEditCategoryPermissions($model)) {
 			throw new UnauthorizedHttpException();
 		}
 		$loaded = $model->load(Yii::$app->request->post());
 		// check if allowed to edit new model
-		if (!self::checkEditCategoryPermissions($model)) {
+		if (!ArticleCategoryHelper::checkEditCategoryPermissions($model)) {
 			throw new UnauthorizedHttpException();
 		}
 		if ($loaded && $model->save()) {
@@ -107,7 +108,7 @@ class ArticleBackendController extends \yii\web\Controller
 	public function actionDelete($id)
 	{
 		$model = $this->findModel($id);
-		if (!self::checkEditCategoryPermissions($model)) {
+		if (!ArticleCategoryHelper::checkEditCategoryPermissions($model)) {
 			throw new UnauthorizedHttpException();
 		}
 		$model->delete();
@@ -130,57 +131,6 @@ class ArticleBackendController extends \yii\web\Controller
 			throw new NotFoundHttpException($msg);
 		}
 		return $model;
-	}
-
-
-	/**
-	 * Checks if the current user is allowed to edit this article
-	 *
-	 * @param \yii\db\ActiveRecord $model
-	 * @return bool
-	 */
-	public static function checkEditCategoryPermissions($model)
-	{
-
-		$allRolesEmpty = true;
-		foreach($model->articleCategories as $articleCategory) {
-			/** @var \asinfotrack\yii2\article\models\ArticleCategory|\creocoder\nestedsets\NestedSetsBehavior $articleCategory */
-
-			$categories= $articleCategory->parents()->all();
-			$categories = array_merge($categories, $model->articleCategories);
-
-			$roles = [];
-
-			$split_char = ',';
-			foreach($categories as $category) {
-				/** @var \asinfotrack\yii2\article\models\ArticleCategory $category */
-
-				// check callback
-				if (!empty($category->editor_callback_class)) {
-					$allRolesEmpty = false;
-					if (call_user_func([$category->editor_callback_class, $category->editor_callback_method])) {
-						return true;
-					}
-				}
-
-				// add roles to array
-				if (null !== $category->editor_item_names) {
-					$roles = array_merge($roles, explode($split_char, $category->editor_item_names));
-				}
-			}
-
-			$roles = array_filter($roles, function ($elem) { return (null !== $elem) && ('' !== $elem);});
-
-			$allRolesEmpty &= (count($roles) === 0);
-
-			foreach ($roles as $role) {
-				if (Yii::$app->user->can($role)) {
-					return true;
-				}
-			}
-		}
-
-		return $allRolesEmpty;
 	}
 
 }

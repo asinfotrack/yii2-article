@@ -1,6 +1,4 @@
 <?php
-
-use asinfotrack\yii2\article\controllers\ArticleBackendController;
 use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -9,6 +7,7 @@ use asinfotrack\yii2\toolbox\widgets\grid\AdvancedActionColumn;
 use asinfotrack\yii2\toolbox\widgets\grid\AdvancedDataColumn;
 use asinfotrack\yii2\toolbox\widgets\grid\IdColumn;
 use asinfotrack\yii2\article\Module;
+use asinfotrack\yii2\article\helpers\ArticleCategoryHelper;
 
 /* @var $this \yii\web\View */
 /* @var $dataProvider \yii\data\ActiveDataProvider */
@@ -35,11 +34,11 @@ $typeFilter = call_user_func([Module::getInstance()->classMap['articleModel'], '
 	'filterModel'=>$searchModel,
 	'columns'=>[
 		[
-			'class'=>IdColumn::className(),
+			'class'=>IdColumn::class,
 			'attribute'=>'id',
 		],
 		[
-			'class'=>AdvancedDataColumn::className(),
+			'class'=>AdvancedDataColumn::class,
 			'attribute'=>'canonical',
 			'format'=>'html',
 			'columnWidth'=>20,
@@ -53,7 +52,7 @@ $typeFilter = call_user_func([Module::getInstance()->classMap['articleModel'], '
 			'columnWidth'=>25,
 		],
 		[
-			'class'=>AdvancedDataColumn::className(),
+			'class'=>AdvancedDataColumn::class,
 			'attribute'=>'type',
 			'columnWidth'=>10,
 			'filter'=>$typeFilter,
@@ -62,10 +61,10 @@ $typeFilter = call_user_func([Module::getInstance()->classMap['articleModel'], '
 			},
 		],
 		[
-			'class'=>AdvancedActionColumn::className(),
+			'class'=>AdvancedActionColumn::class,
 			'template'=> function($model) {
 				$buttons = ['{view}'];
-				if (ArticleBackendController::checkEditCategoryPermissions($model)) {
+				if (ArticleCategoryHelper::checkEditCategoryPermissions($model)) {
 					$buttons[] = '{update}';
 					$buttons[] = '{delete}';
 				}
