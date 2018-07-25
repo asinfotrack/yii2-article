@@ -93,12 +93,18 @@ accesses the `ArticleRender`. Make sure you use the same module-ID as you use in
 
 ## Changelog
 
+###### [v0.8.7](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.7)
+- updated documentation of ArticleBackendController->checkEditCategoryPermissions
+
+###### [v0.8.6](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.6)
+- bugfix, module id was deleted
+
 ###### [v0.8.5](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.5)
-- Bugfix in MenuItem model in route validation
-- Added support for is_new_tab in MenuItem
+- bugfix in MenuItem model in route validation
+- added support for is_new_tab in MenuItem
 
 ###### [v0.8.4](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.4)
-- Extended MenuItem to handle article categories
+- extended MenuItem to handle article categories
 
 ###### [v0.8.3](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.3)
 - dependency update
