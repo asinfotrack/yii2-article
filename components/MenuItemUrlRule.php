@@ -78,21 +78,43 @@ class MenuItemUrlRule implements UrlRuleInterface
 		// try matching article category menu item
 		if ($route === $this->targetArticleCategoryRoute && isset($params[$this->targetArticleCategoryRouteParam])) {
 			$menuItem = MenuItem::find()->types(MenuItem::TYPE_ARTICLE_CATEGORY)->articleCategory($params[$this->targetArticleCategoryRouteParam])->one();
-			if ($menuItem !== null) return $menuItem->path_info;
+			if ($menuItem !== null) return $this->combineUrlParameter($menuItem, $params, [$this->targetArticleCategoryRouteParam]);
 		}
 
 		//try matching an article menu item
 		if ($route === $this->targetArticleRoute && isset($params[$this->targetArticleRouteParam])) {
 			$menuItem = MenuItem::find()->types(MenuItem::TYPE_ARTICLE)->article($params[$this->targetArticleRouteParam])->one();
-			if ($menuItem !== null) return $menuItem->path_info;
+			if ($menuItem !== null) return $this->combineUrlParameter($menuItem, $params, [$this->targetArticleRouteParam]);
 		}
 
 		//try matching route items
 		$menuItem = MenuItem::find()->types(MenuItem::TYPE_ROUTE)->route($route)->one();
-		if ($menuItem !== null) return $menuItem->path_info;
+		if ($menuItem !== null) return $this->combineUrlParameter($menuItem, $params);
 
 		//could not create url with this rule
 		return false;
 	}
 
+	/**
+	 * combines the menuItem path_info with the parameters
+	 *
+	 * @param MenuItem $menuItem
+	 * @param array $params
+	 * @param array $ignoreParams
+	 * @return string
+	 *
+	 */
+	private function combineUrlParameter($menuItem, $params, $ignoreParams = []) {
+		$retVal = $menuItem->path_info;
+		$params = array_filter($params, function ($key) use ($ignoreParams) { return !in_array($key, $ignoreParams); }, ARRAY_FILTER_USE_KEY);
+		if (count($params) > 0) {
+			$first = true;
+			foreach ($params as $k=>$v) {
+				$retVal .= ($first ? '?' : '&') . $k . '=' . $v;
+				$first = false;
+			}
+		}
+		return $retVal;
+	}
+	
 }
