@@ -135,7 +135,7 @@ class MenuItemHelper
 		$itemArr = ['label'=>$model->label, 'icon'=>$model->icon, 'visible'=>true, 'options'=>$options];
 		switch ($model->type) {
 			case MenuItem::TYPE_ROUTE:
-				$finalRoute = ArrayHelper::merge([$model->route], empty($model->route_params) ? [] : Json::decode($model->route_params));
+				$finalRoute = ArrayHelper::merge(['/' . $model->route], empty($model->route_params) ? [] : Json::decode($model->route_params));
 				$itemArr['url'] = Url::to($finalRoute);
 				break;
 			case MenuItem::TYPE_URL:
