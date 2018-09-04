@@ -8,6 +8,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\HtmlPurifier;
 use asinfotrack\yii2\article\models\Article;
+use yii\helpers\Url;
 
 /**
  * The rendering component of the article module. It processes the contents of an article model into the
@@ -181,6 +182,11 @@ class ArticleRenderer extends \yii\base\Component
 	public $purifyContentConfig = [];
 
 	/**
+	 * @var array the aliases to replace with an absolute url
+	 */
+	public $hrefAliases = [];
+
+	/**
 	 * @inheritdoc
 	 */
 	public function init()
@@ -226,6 +232,7 @@ class ArticleRenderer extends \yii\base\Component
 			$parts[] = $this->renderPublishedAt($article->published_at);
 		}
 		if (!empty($article->intro)) $parts[] = $this->renderIntro($article->intro);
+		//here extract @web
 		if (!empty($article->content)) $parts[] = $this->renderContent($article->content, $depth);
 
 		//concat the parts, wrap them if necessary and return the resulting article code
@@ -275,6 +282,25 @@ class ArticleRenderer extends \yii\base\Component
 	 */
 	protected function renderContent($content, $depth)
 	{
+		if (!empty($this->hrefAliases)) {
+			//load all allowed href aliases into a string
+			$hrefAliasesOptions = implode('|', $this->hrefAliases);
+
+			//create regex
+			$regex = sprintf('/href="((%s).*?)"/', $hrefAliasesOptions);
+
+			//get all matches
+			$contentParts = [];
+			preg_match_all($regex, $content, $contentParts);
+			//replace content href with absolute paths
+			foreach ($contentParts[1] as $contentPart) {
+				$absoluteUrl = Url::to($contentPart);
+				$strSearch = sprintf('href="%s"', $contentPart);
+				$strReplace = sprintf('href="%s"', $absoluteUrl);
+				$content = str_replace($strSearch, $strReplace, $content);
+			}
+		}
+
 		if ($this->purifyContent) {
 			$content = HtmlPurifier::process($content, $this->purifyContentConfig);
 		}
