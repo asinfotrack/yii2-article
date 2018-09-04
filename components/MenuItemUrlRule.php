@@ -110,11 +110,21 @@ class MenuItemUrlRule implements UrlRuleInterface
 		if (count($params) > 0) {
 			$first = true;
 			foreach ($params as $k=>$v) {
-				$retVal .= ($first ? '?' : '&') . $k . '=' . $v;
-				$first = false;
+				if (is_array($v)) {
+					$filteredValueArray = array_filter($v, function($value, $key) {
+						return !empty($value);
+					}, ARRAY_FILTER_USE_BOTH);
+					foreach ($filteredValueArray as $filteredKey=>$filteredVal) {
+						$retVal .= sprintf($first ? '?%s=%s' : '&%s=%s', $filteredKey, $filteredVal);
+						$first = false;
+					}
+				} else {
+					$retVal .= sprintf($first ? '?%s=%s' : '&%s=%s', $k, $v);
+					$first = false;
+				}
 			}
 		}
 		return $retVal;
 	}
-	
+
 }
