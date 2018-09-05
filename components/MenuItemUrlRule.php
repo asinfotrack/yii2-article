@@ -105,26 +105,14 @@ class MenuItemUrlRule implements UrlRuleInterface
 	 *
 	 */
 	private function combineUrlParameter($menuItem, $params, $ignoreParams = []) {
-		$retVal = $menuItem->path_info;
+		$url = $menuItem->path_info;
 		$params = array_filter($params, function ($key) use ($ignoreParams) { return !in_array($key, $ignoreParams); }, ARRAY_FILTER_USE_KEY);
-		if (count($params) > 0) {
-			$first = true;
-			foreach ($params as $k=>$v) {
-				if (is_array($v)) {
-					$filteredValueArray = array_filter($v, function($value, $key) {
-						return !empty($value);
-					}, ARRAY_FILTER_USE_BOTH);
-					foreach ($filteredValueArray as $filteredKey=>$filteredVal) {
-						$retVal .= sprintf($first ? '?%s=%s' : '&%s=%s', $filteredKey, $filteredVal);
-						$first = false;
-					}
-				} else {
-					$retVal .= sprintf($first ? '?%s=%s' : '&%s=%s', $k, $v);
-					$first = false;
-				}
-			}
+		$anchor = isset($params['#']) ? '#' . $params['#'] : '';
+		if (!empty($params) && ($query = http_build_query($params)) !== '') {
+			$url .= '&' . $query;
 		}
-		return $retVal;
+
+		return $url . $anchor;
 	}
 
 }
