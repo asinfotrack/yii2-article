@@ -93,6 +93,9 @@ accesses the `ArticleRender`. Make sure you use the same module-ID as you use in
 
 ## Changelog
 
+###### [v0.8.11](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.11)
+- simplified params handling in MenuItemUrlRule
+
 ###### [v0.8.10](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.10)
 - bugfix in MenuItemHelper for routes
 
