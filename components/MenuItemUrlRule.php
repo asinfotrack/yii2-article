@@ -109,7 +109,7 @@ class MenuItemUrlRule implements UrlRuleInterface
 		$params = array_filter($params, function ($key) use ($ignoreParams) { return !in_array($key, $ignoreParams); }, ARRAY_FILTER_USE_KEY);
 		$anchor = isset($params['#']) ? '#' . $params['#'] : '';
 		if (!empty($params) && ($query = http_build_query($params)) !== '') {
-			$url .= '&' . $query;
+			$url .= '?' . $query;
 		}
 
 		return $url . $anchor;
