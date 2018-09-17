@@ -195,6 +195,7 @@ class ArticleRenderer extends \yii\base\Component
 
 		//validate config
 		$this->validateConfig();
+		$this->purifyContentConfig['Attr.AllowedFrameTargets'] = ['_blank'];
 	}
 
 	/**
