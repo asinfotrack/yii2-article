@@ -179,7 +179,7 @@ class ArticleRenderer extends \yii\base\Component
 	 * @var array the config to use for purifying the content
 	 * @see \yii\helpers\HtmlPurifier::process()
 	 */
-	public $purifyContentConfig = [];
+	public $purifyContentConfig = ['Attr.AllowedFrameTargets' => ['_blank']];
 
 	/**
 	 * @var array the aliases to replace with an absolute url
@@ -195,7 +195,6 @@ class ArticleRenderer extends \yii\base\Component
 
 		//validate config
 		$this->validateConfig();
-		$this->purifyContentConfig['Attr.AllowedFrameTargets'] = ['_blank'];
 	}
 
 	/**
