@@ -1,12 +1,12 @@
 <?php
 namespace asinfotrack\yii2\article\components;
 
-use asinfotrack\yii2\article\Module;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\helpers\HtmlPurifier;
+use HTMLPurifier;
+use asinfotrack\yii2\article\Module;
 use asinfotrack\yii2\article\models\Article;
 use yii\helpers\Url;
 
@@ -176,15 +176,17 @@ class ArticleRenderer extends \yii\base\Component
 	public $purifyContent = true;
 
 	/**
-	 * @var array the config to use for purifying the content
-	 * @see \yii\helpers\HtmlPurifier::process()
-	 */
-	public $purifyContentConfig = ['Attr.AllowedFrameTargets' => ['_blank']];
-
-	/**
 	 * @var array the aliases to replace with an absolute url
 	 */
-	public $hrefAliases = [];
+	public $aliases = [];
+
+	/**
+	 * @var array html attributes like href|src to search and replace the aliases with an absolute url
+	 */
+	public $attributeAliases = ['href', 'src'];
+
+	/** @var HTMLPurifier */
+	private $purifier;
 
 	/**
 	 * @inheritdoc
@@ -195,6 +197,8 @@ class ArticleRenderer extends \yii\base\Component
 
 		//validate config
 		$this->validateConfig();
+
+		$this->purifier = Module::getInstance()->purifier->getPurifierInstance();
 	}
 
 	/**
@@ -203,6 +207,7 @@ class ArticleRenderer extends \yii\base\Component
 	 * @param integer|string|\asinfotrack\yii2\article\models\Article $article the article to render
 	 * @param int $depth the current depth of recursive article rendering
 	 * @return string the rendered content
+	 * @throws \yii\base\InvalidConfigException
 	 */
 	public function render($article, $depth=0)
 	{
@@ -263,7 +268,7 @@ class ArticleRenderer extends \yii\base\Component
 	protected function renderIntro($intro)
 	{
 		if ($this->purifyIntro) {
-			$intro = HtmlPurifier::process($intro, $this->purifyIntroConfig);
+			$intro = $this->purifier->purify($intro);
 		}
 		if (!empty($intro) && is_callable($this->introRenderCallback)) {
 			$intro = call_user_func($this->introRenderCallback, $intro);
@@ -282,27 +287,37 @@ class ArticleRenderer extends \yii\base\Component
 	 */
 	protected function renderContent($content, $depth)
 	{
-		if (!empty($this->hrefAliases)) {
-			//load all allowed href aliases into a string
-			$hrefAliasesOptions = implode('|', $this->hrefAliases);
+		if (!empty($this->aliases)) {
+			//load all allowed aliases into a string
+			$aliasesOptions = implode('|', $this->aliases);
+			$attributeAliases = implode('|', $this->attributeAliases);
 
 			//create regex
-			$regex = sprintf('/href="((%s).*?)"/', $hrefAliasesOptions);
+			$regex = sprintf('/((%s)="(%s.*?)")/', $attributeAliases, $aliasesOptions);
 
 			//get all matches
 			$contentParts = [];
 			preg_match_all($regex, $content, $contentParts);
-			//replace content href with absolute paths
-			foreach ($contentParts[1] as $contentPart) {
-				$absoluteUrl = Url::to($contentPart);
-				$strSearch = sprintf('href="%s"', $contentPart);
-				$strReplace = sprintf('href="%s"', $absoluteUrl);
-				$content = str_replace($strSearch, $strReplace, $content);
+
+			if (isset($contentParts[1])) {
+				//replace content href|src with absolute paths
+				foreach ($contentParts[1] as $contentPart) {
+					$regex = sprintf('/(%s)="(%s.*?)"/', $attributeAliases, $aliasesOptions);
+
+					$urls = [];
+					preg_match_all($regex, $contentPart, $urls);
+
+					if (!isset($urls[2]) || !isset($urls[1][0])  || !isset($urls[0][0])) continue;
+					$url = Yii::getAlias($urls[2][0]);
+					$absoluteUrl = Url::to($url);
+					$strReplace = sprintf('%s="%s"', $urls[1][0], $absoluteUrl);
+					$content = str_replace($urls[0][0], $strReplace, $content);
+				}
 			}
 		}
 
 		if ($this->purifyContent) {
-			$content = HtmlPurifier::process($content, $this->purifyContentConfig);
+			$content = $this->purifier->purify($content);
 		}
 		if (!empty($content) && is_callable($this->contentRenderCallback)) {
 			$content = call_user_func($this->contentRenderCallback, $content);
@@ -317,6 +332,7 @@ class ArticleRenderer extends \yii\base\Component
 	 *
 	 * @param int $publishedAt the timestamp of the publication date
 	 * @return string the resulting code for the published at part
+	 * @throws \yii\base\InvalidConfigException
 	 */
 	protected function renderPublishedAt($publishedAt)
 	{
@@ -401,6 +417,7 @@ class ArticleRenderer extends \yii\base\Component
 	 * @param string[] $params the placeholder params
 	 * @param int $depth the current depth of recursive article rendering
 	 * @return string the resulting content of the placeholder
+	 * @throws \yii\base\InvalidConfigException
 	 */
 	protected function handlePlaceholder($name, $params, $depth)
 	{

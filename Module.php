@@ -16,6 +16,7 @@ use asinfotrack\yii2\article\models\MenuItem;
  * @license AS infotrack AG license / MIT, see provided license file
  *
  * @property \asinfotrack\yii2\article\components\ArticleRenderer $renderer
+ * @property \asinfotrack\yii2\article\components\Purifier $purifier
  */
 class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 {

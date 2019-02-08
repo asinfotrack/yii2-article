@@ -24,6 +24,47 @@ return [
 
 			],
 		],
+		'purifier'=>[
+			'class'=>'asinfotrack\yii2\article\components\Purifier',
+			'basicElements'=>[
+				[
+					'video',
+					'Block',
+					'Flow',
+					'Common',
+					[
+						'src' => 'URI',
+						'width' => 'Length',
+						'height' => 'Length',
+						'controls' => 'CDATA',
+						'style' => 'CDATA'
+					],
+				],
+				[
+					'source',
+					'Block',
+					'Flow',
+					'Common',
+					[
+						'src' => 'URI',
+						'width' => 'Length',
+						'height' => 'Length',
+						'type' => 'CDATA',
+						'style' => 'CDATA'
+					],
+				],
+			],
+			'additionalElements'=>[
+				//add custom elements for your project
+				// the structure should be like in basicElements
+				// HTMLPurifier_HTMLModule::addElement()
+			],
+			'additionalConfig'=>[
+				'Attr.AllowedFrameTargets'=>['_blank'],
+				'HTML.SafeIframe'=>true,
+				'URI.SafeIframeRegexp'=>'%^//www\.youtube\.com/embed/%',
+			],
+		],
 	],
 
 	'params'=>[
