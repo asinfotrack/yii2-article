@@ -92,6 +92,18 @@ accesses the `ArticleRender`. Make sure you use the same module-ID as you use in
 ```
 
 ## Changelog
+###### [v0.8.18](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.14)
+- added new attributes to the default configuration for html5 video tag
+
+###### [v0.8.17](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.14)
+- added new purifier with configuration for html5 video tag support
+
+###### [v0.8.16](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.14)
+- Added default html purifier config allow target="_blank"
+
+###### [v0.8.15](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.14)
+- Added default html purifier config allow target="_blank"
+
 ###### [v0.8.14](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.14)
 - bugfix in MenuItemUrlRule
 
