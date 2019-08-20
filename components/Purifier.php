@@ -39,7 +39,7 @@ class Purifier extends \yii\base\Component {
 	{
 		$basicConfig = [
 			'HTML.DefinitionID'=>'asi-purifier',
-			'HTML.DefinitionRev'=>2
+			'HTML.DefinitionRev'=>1
 		];
 		$configArray = ArrayHelper::merge($basicConfig, $this->additionalConfig);
 

@@ -34,6 +34,8 @@ return [
 					'Common',
 					[
 						'src' => 'URI',
+						'poster'=>'URI',
+						'preload'=>'Enum#auto,metadata,none',
 						'width' => 'Length',
 						'height' => 'Length',
 						'controls' => 'CDATA',
