@@ -55,7 +55,7 @@ $form = ActiveForm::begin([
 	<?= $form->field($model, 'title_head')->textInput(['maxlength'=>true]) ?>
 	<?= $form->field($model, 'meta_keywords')->textInput(['maxlength'=>true]) ?>
 	<?= $form->field($model, 'meta_description')->textarea(['rows'=>3]) ?>
-	<?= $form->field($model, 'is_indexed_search_engine')->checkbox() ?>
+	<?= $form->field($model, 'is_indexed_search_engine')->dropDownList(Yii::$app->formatter->booleanFormat) ?>
 </fieldset>
 
 <fieldset data-types="<?= Json::encode([Article::TYPE_ARTICLE]) ?>">
