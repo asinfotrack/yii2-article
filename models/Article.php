@@ -24,6 +24,7 @@ use asinfotrack\yii2\article\models\query\ArticleQuery;
  * @property integer $id
  * @property string $canonical
  * @property integer $type
+ * @property bool $is_indexed_search_engine
  * @property string $title_internal
  * @property string $title
  * @property string $title_head
@@ -128,10 +129,12 @@ class Article extends \yii\db\ActiveRecord
 		return [
 			[['title_internal','title','title_head','subtitle','meta_keywords','meta_description'], 'trim'],
 			[['canonical','title_internal','title','title_head','subtitle','meta_keywords','meta_description'], 'default'],
+			[['is_indexed_search_engine'], 'default', 'value' => true],
 
-			[['canonical','title'], 'required'],
+			[['canonical','title','is_indexed_search_engine'], 'required'],
 
 			[['type'], 'in', 'range'=>static::$ALL_TYPES],
+			[['is_indexed_search_engine'], 'boolean'],
 			[['title_head'], 'string', 'max'=>70],
 			[['meta_description'], 'string', 'max'=>160],
 			[['title_internal','title','subtitle','meta_keywords'], 'string', 'max'=>255],
@@ -184,6 +187,7 @@ class Article extends \yii\db\ActiveRecord
 			'id'=>Yii::t('app', 'ID'),
 			'canonical'=>Yii::t('app', 'Canonical'),
 			'type'=>Yii::t('app', 'Type of article'),
+			'is_indexed_search_engine'=>Yii::t('app', 'Indexed by search engines'),
 			'title_internal'=>Yii::t('app', 'Internal title'),
 			'title'=>Yii::t('app', 'Title'),
 			'title_head'=>Yii::t('app', 'Title used in HTML-Head'),

@@ -30,7 +30,6 @@ use yii\validators\UniqueValidator;
  * @property integer $state
  * @property string $label
  * @property string $icon
- * @property bool $is_indexed_search_engine
  * @property bool $is_new_tab
  * @property string $path_info
  * @property integer $article_id
@@ -126,12 +125,10 @@ class MenuItem extends \yii\db\ActiveRecord
 			[['label'], 'required'],
 			[['parentId','type','state'], 'required', 'on'=>self::SCENARIO_DEFAULT],
 
-			[['is_indexed_search_engine'], 'default', 'value' => true],
-
 			[['icon','label','visible_item_names','visible_callback_class','visible_callback_method'], 'string', 'max'=>255],
 			[['type'], 'in', 'range'=>static::$ALL_TYPES],
 			[['state'], 'in', 'range'=>static::$ALL_STATES],
-			[['is_indexed_search_engine', 'is_new_tab'], 'boolean'],
+			[['is_new_tab'], 'boolean'],
 			[['visible_item_names'], 'match', 'pattern'=>'/^[\w -_]+(,[\w -_]+)*$/'],
 
 			[['path_info'], 'required', 'when'=>function ($model) {
@@ -221,7 +218,6 @@ class MenuItem extends \yii\db\ActiveRecord
 			'state'=>Yii::t('app', 'State'),
 			'label'=>Yii::t('app', 'Label'),
 			'icon'=>Yii::t('app', 'Icon'),
-			'is_indexed_search_engine'=>Yii::t('app', 'Is indexed search engine'),
 			'is_new_tab'=>Yii::t('app', 'New tab'),
 			'path_info'=>Yii::t('app', 'Path info'),
 			'article_id'=>Yii::t('app', 'Article'),

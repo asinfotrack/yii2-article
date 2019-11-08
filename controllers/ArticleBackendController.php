@@ -77,6 +77,8 @@ class ArticleBackendController extends \yii\web\Controller
 				}
 				return $this->redirect(['article-backend/view', 'id' => $model->id]);
 			}
+		} else {
+			$model->is_indexed_search_engine = true;
 		}
 
 		return $this->render(Module::getInstance()->backendArticleViews['create'], [

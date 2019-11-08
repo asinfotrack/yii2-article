@@ -12,7 +12,7 @@ class m191108_095612_column_is_indexed_search_engine extends \asinfotrack\yii2\t
 	 */
 	public function safeUp()
 	{
-		$this->addColumn('{{%menu_item}}', 'is_indexed_search_engine', $this->boolean()->notNull()->defaultValue(true)->after('icon'));
+		$this->addColumn('{{%article}}', 'is_indexed_search_engine', $this->boolean()->notNull()->defaultValue(true)->after('type'));
 
 		return true;
 	}
@@ -22,7 +22,7 @@ class m191108_095612_column_is_indexed_search_engine extends \asinfotrack\yii2\t
 	 */
 	public function safeDown()
 	{
-		$this->dropColumn('{{%menu_item}}', 'is_indexed_search_engine');
+		$this->dropColumn('{{%article}}', 'is_indexed_search_engine');
 		return true;
 	}
 

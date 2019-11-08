@@ -77,6 +77,7 @@ if (count($model->articleCategories) > 0) {
 		],
 		'meta_keywords',
 		'meta_description',
+		'is_indexed_search_engine:boolean',
 	],
 ]) ?>
 
