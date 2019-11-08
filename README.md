@@ -92,16 +92,19 @@ accesses the `ArticleRender`. Make sure you use the same module-ID as you use in
 ```
 
 ## Changelog
-###### [v0.8.18](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.14)
+###### [v0.8.19](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.19)
+- added new column is_indexed_search_engine with default value true
+
+###### [v0.8.18](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.18)
 - added new attributes to the default configuration for html5 video tag
 
-###### [v0.8.17](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.14)
+###### [v0.8.17](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.17)
 - added new purifier with configuration for html5 video tag support
 
-###### [v0.8.16](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.14)
+###### [v0.8.16](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.16)
 - Added default html purifier config allow target="_blank"
 
-###### [v0.8.15](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.14)
+###### [v0.8.15](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.15)
 - Added default html purifier config allow target="_blank"
 
 ###### [v0.8.14](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.14)
