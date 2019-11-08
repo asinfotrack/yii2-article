@@ -92,6 +92,9 @@ accesses the `ArticleRender`. Make sure you use the same module-ID as you use in
 ```
 
 ## Changelog
+###### [v0.8.20](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.20)
+- moved is_indexed_search_engine to article model
+
 ###### [v0.8.19](https://github.com/asinfotrack/yii2-article/releases/tag/0.8.19)
 - added new column is_indexed_search_engine with default value true
 
