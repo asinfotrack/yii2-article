@@ -93,4 +93,4 @@ accesses the `ArticleRender`. Make sure you use the same module-ID as you use in
 
 ## Changelog
 
-[Learn about the latest improvements](changelog).
+[Learn about the latest improvements](CHANGELOG.md).
