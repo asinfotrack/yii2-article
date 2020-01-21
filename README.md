@@ -16,7 +16,7 @@ $ composer require asinfotrack/yii2-article
 or add
 
 ```
-"asinfotrack/yii2-article": "~0.8.0"
+"asinfotrack/yii2-article": "~1.0.1"
 ```
 
 to the `require` section of your `composer.json` file.
