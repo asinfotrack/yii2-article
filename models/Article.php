@@ -251,7 +251,7 @@ class Article extends \yii\db\ActiveRecord
 	{
 		//if no array is specified and value is not numeric, check canonical
 		if (!is_array($condition) && !is_numeric($condition)) {
-			$condition = [static::tableName() . '.canonical'=>$condition];
+			$condition = ['canonical'=>$condition];
 		}
 
 		return parent::findOne($condition);
