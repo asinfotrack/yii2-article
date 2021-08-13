@@ -180,7 +180,7 @@ class MenuItemHelper
 				$itemArr['visible'] = call_user_func([$model->visible_callback_class, $model->visible_callback_method], $model);
 			}
 		}
-		
+
 		if ($model->is_new_tab) {
 			$itemArr['itemOptions'] = ['target'=>'_blank'];
 		}
@@ -213,7 +213,7 @@ class MenuItemHelper
 			if ($menuItem->lft <= $parentItem->lft) return false;
 			if ($menuItem->rgt >= $parentItem->rgt) return false;
 
-			return true;
+			return in_array($menuItem->state, MenuItem::$RENDERED_STATES);
 		});
 	}
 
