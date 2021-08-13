@@ -1,3 +1,6 @@
+###### [v1.0.2](https://github.com/asinfotrack/yii2-article/releases/tag/1.0.2)
+- render menu items only in rendered state
+
 ###### [v1.0.1](https://github.com/asinfotrack/yii2-article/releases/tag/1.0.1)
 - fixed `findOne` bug regarding yii2 update 
 
